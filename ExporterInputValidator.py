@@ -2,9 +2,7 @@ from QueryTypes import QueryTypes
 
 class ExporterInputValidator:
     def validate_group(group, queryType):
-        if(type(group) != int or type(queryType) != str):
-            return False
-        elif queryType == QueryTypes.GROUP.value:
+        if queryType == QueryTypes.GROUP.value:
             #TODO
             return
         elif queryType == QueryTypes.LECTURER.value:
@@ -15,9 +13,8 @@ class ExporterInputValidator:
             return;
 
     def validate_query_type(queryType):
-        if(type(queryType) != str):
-            return False
-        elif queryType == QueryTypes.GROUP.value or \
+        stringType = str(queryType)
+        if queryType == QueryTypes.GROUP.value or \
             queryType == QueryTypes.LECTURER.value or \
             queryType == QueryTypes.WEEK.value:
             return True
