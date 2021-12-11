@@ -3,7 +3,9 @@ from tkinter import StringVar, IntVar, NSEW
 from datetime import date
 import os
 import configparser
-import ExporterRequestProcess
+import ExporterRequestProcess, ExporterLogger as logger
+
+logger.info("Exporter Interface initializing...")
 
 QUERY_TYPES = ['Group',
                 'Lecturer',
@@ -23,6 +25,7 @@ MONTHS = ['January',
             'December']
 
 CWD = os.getcwd()
+logger.info("Current working directory set to:" + CWD)
 
 config_parser = configparser.RawConfigParser()
 config_parser.read('exporter_config.cfg', encoding='UTF-8')
@@ -38,16 +41,23 @@ def export():
     config_parser.set('request_parameters', 'group', group.get())
     config_parser.set('request_parameters', 'query_type', query_type.get())
     config_parser.set('request_parameters', 'month', month.get())
-    config_parser.set('request_parameters', 'export_directory', export_directory.get())
+    config_parser.set('request_parameters', 'export_directory', export_directory.get())    
+    
     with open('exporter_config.cfg', 'w', encoding='UTF-8') as config_file:
         config_parser.write(config_file)        
+        
+    logger.info("Exporting data with the following parameters:")
+    logger.info("Group: " + str(group.get()))
+    logger.info("Query Type: " + query_type.get())
+    logger.info("Month: " + month.get())
+    logger.info("Default export folder: " + export_directory.get())
 
     # Export data
     ExporterRequestProcess.export_monthly_data(group.get(),
                                                 query_type.get(),
                                                 month.get(),
-                                                export_directory.get())
-
+                                                export_directory.get())    
+    logger.info("Export finished successfuly")
 
 # Create root frame, title, logo and weight for resizing
 root_frame.title('Nvna Schedule Exporter')
