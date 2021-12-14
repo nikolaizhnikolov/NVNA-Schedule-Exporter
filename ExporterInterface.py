@@ -1,8 +1,6 @@
 from tkinter import Tk, ttk, PhotoImage, filedialog
 from tkinter import StringVar, IntVar, NSEW
-from datetime import date
-import os
-import configparser
+import ExporterConfig as config
 import ExporterRequestProcess, ExporterLogger as logger
 
 logger.info("Exporter Interface initializing...")
@@ -24,27 +22,13 @@ MONTHS = ['January',
             'November',
             'December']
 
-CWD = os.getcwd()
-logger.info("Current working directory set to:" + CWD)
-
-config_parser = configparser.RawConfigParser()
-config_parser.read('exporter_config.cfg', encoding='UTF-8')
-
 root_frame = Tk()
-group=              IntVar(value=config_parser.get('request_parameters', 'group', fallback='0'))
-query_type=         StringVar(value=config_parser.get('request_parameters', 'query_type', fallback=QUERY_TYPES[0]))
-month=              StringVar(value=config_parser.get('request_parameters', 'month', fallback=date.today().strftime('%B')))
-export_directory=   StringVar(value=config_parser.get('request_parameters', 'export_directory', fallback=CWD))
+group=              IntVar(value=config.group)
+query_type=         StringVar(value=config.query_type)
+month=              StringVar(value=config.month)
+export_directory=   StringVar(value=config.export_directory)
 
-def export():
-    # Save request parameters into cfg for next use
-    config_parser.set('request_parameters', 'group', group.get())
-    config_parser.set('request_parameters', 'query_type', query_type.get())
-    config_parser.set('request_parameters', 'month', month.get())
-    config_parser.set('request_parameters', 'export_directory', export_directory.get())    
-    
-    with open('exporter_config.cfg', 'w', encoding='UTF-8') as config_file:
-        config_parser.write(config_file)        
+def export():   
         
     logger.info("Exporting data with the following parameters:")
     logger.info("Group: " + str(group.get()))
@@ -61,7 +45,7 @@ def export():
 
 # Create root frame, title, logo and weight for resizing
 root_frame.title('Nvna Schedule Exporter')
-icon = PhotoImage(file=r'D:\Workspace\ВВМУ\Курсов Проект\assets\logo.png')
+icon = PhotoImage(file=r'D:\Workspace\ВВМУ\Курсов Проект\logo.png')
 root_frame.iconphoto(False, icon)
 root_frame.columnconfigure(index='0 1 2 3', weight=1)
 root_frame.rowconfigure(index='0 1 2 3 4 5', weight=1)
@@ -111,12 +95,11 @@ browse_button_widget.grid(
     padx='5 20', pady='5 5')
 browse_button_widget.bind('<ButtonPress>',lambda e: export_directory.set(filedialog.askdirectory()))
 # Export Button
-export_button_widget = ttk.Button(root_frame, text='Export')
+export_button_widget = ttk.Button(root_frame, text='Export', command=export)
 export_button_widget.grid(
     column=1, columnspan=2, row=5,
     sticky=(NSEW),
     padx='10 5', pady='5 10')
-export_button_widget.bind('<ButtonPress>',lambda e: export())
 
 # Loop root frame to visualise elements
 root_frame.mainloop()

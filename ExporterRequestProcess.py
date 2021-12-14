@@ -1,7 +1,6 @@
-from datetime import date, datetime, time
+from datetime import date, datetime
 from requests import RequestException
 from requests.models import HTTPError
-from requests.sessions import Request
 import calendar
 import requests
 import ExcelExporter
