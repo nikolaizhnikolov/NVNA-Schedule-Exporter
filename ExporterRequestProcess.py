@@ -5,6 +5,7 @@ import calendar
 import requests
 import ExcelExporter
 import re
+import unicodedata
 import ExporterLogger as logger
 
 url = 'https://nvna.eu/wp/'
@@ -35,7 +36,7 @@ def get_weekly_data(group, query_type, week):
             'queryType':    query_type.lower(),
             'Week':         week}
 
-        request = requests.put(url, params=request_parameters, timeout=1)
+        request = requests.put(url, params=request_parameters, timeout=5)
         if request.status_code != requests.codes['ok']:
             raise HTTPError
         return(request.text)
@@ -77,7 +78,10 @@ def sanitize_weekly_data(raw_data, month) -> list:
         no_lecture = no_lecture_regex.search(raw_data)
         # If found then there were no lectures for that day
         if no_lecture != None:
-            weekly_data.append(no_lecture.group(2))       
+            daily_data = []
+            daily_data.append(no_lecture.group(2));
+            daily_data.append("Няма занятия")
+            weekly_data.append(daily_data)       
         # Else - get a regex for the whole day, then search it for any lecture templates  
         else:
             lectures_schedule_regex = re.compile(daily_regex_template(weekday, month) + daily_schedule_regex_template(), flags)
@@ -87,14 +91,15 @@ def sanitize_weekly_data(raw_data, month) -> list:
                 lectures_regex = re.compile(lecture_regex_template(), flags)
                 lectures = lectures_regex.findall(lectures_schedule.group(0))
                 if lectures.__len__ != 0:
-                    weekly_data.append(lectures_schedule.group(2));
+                    daily_data = []
+                    daily_data.append(lectures_schedule.group(2));
                     for lecture in lectures:   
-                        weekly_data.append("Начало: " + lecture[0]);
-                        weekly_data.append("Продължителност: " + lecture[1]);
-                        weekly_data.append("Лекция: " + str.strip(lecture[2]));
-                        weekly_data.append("Място: " + lecture[3]);
-                        weekly_data.append("Лектор: " + lecture[4]);
-                        weekly_data.append("");
+                        daily_data.append(lecture[0]);
+                        daily_data.append(lecture[1]);
+                        daily_data.append(str.strip(lecture[2]));
+                        daily_data.append(lecture[3]);
+                        daily_data.append(unicodedata.normalize("NFKD", lecture[4]));
+                        weekly_data.append(daily_data);
     return weekly_data
 
 def extract_weekly_data(group, query_type, week, month):
@@ -128,4 +133,4 @@ def export_monthly_data(group, query_type, month_name, output_folder):
     for day in monthly_data_list:
         logger.info(day);
     # export data into excel 
-    ExcelExporter.export_data_into_excel("")
+    return ExcelExporter.export_data_into_excel(monthly_data_list, month_name, output_folder)

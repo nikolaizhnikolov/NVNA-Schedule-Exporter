@@ -1,4 +1,4 @@
-from tkinter import Tk, ttk, PhotoImage, filedialog
+from tkinter import Tk, ttk, PhotoImage, filedialog, messagebox
 from tkinter import StringVar, IntVar, NSEW
 import ExporterConfig as config
 import ExporterRequestProcess, ExporterLogger as logger
@@ -37,11 +37,13 @@ def export():
     logger.info("Default export folder: " + export_directory.get())
 
     # Export data
-    ExporterRequestProcess.export_monthly_data(group.get(),
+    export_result = ExporterRequestProcess.export_monthly_data(group.get(),
                                                 query_type.get(),
                                                 month.get(),
                                                 export_directory.get())    
-    logger.info("Export finished successfuly")
+    if export_result:
+        messagebox.showinfo(title="Success", message="Export created succesfully in: \n"+export_directory.get())
+        logger.info("Export finished successfuly")
 
 # Create root frame, title, logo and weight for resizing
 root_frame.title('Nvna Schedule Exporter')
