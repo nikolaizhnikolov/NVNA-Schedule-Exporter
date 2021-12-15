@@ -29,7 +29,7 @@ month=              StringVar(value=config.month)
 export_directory=   StringVar(value=config.export_directory)
 
 def export():   
-        
+    config.update_config(group.get(), query_type.get(), month.get(), export_directory.get())
     logger.info("Exporting data with the following parameters:")
     logger.info("Group: " + str(group.get()))
     logger.info("Query Type: " + query_type.get())
@@ -99,7 +99,7 @@ browse_button_widget.bind('<ButtonPress>',lambda e: export_directory.set(filedia
 # Export Button
 export_button_widget = ttk.Button(root_frame, text='Export', command=export)
 export_button_widget.grid(
-    column=1, columnspan=2, row=5,
+    column=1, columnspan=2, row=4,
     sticky=(NSEW),
     padx='10 5', pady='5 10')
 
