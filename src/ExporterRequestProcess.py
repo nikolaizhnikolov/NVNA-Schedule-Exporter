@@ -106,11 +106,6 @@ def extract_weekly_data(group, query_type, week, month):
     raw_data = get_weekly_data(group, query_type, week)
     return sanitize_weekly_data(raw_data, month)
 
-def save_data_into_file(data):
-    # TODO: save data into excel file instead of txt
-    text_file = open("sample.txt", 'w', encoding='UTF-8')
-    text_file.write(data)
-
 def export_monthly_data(group, query_type, month_name, output_folder):
     # Get index of month for calculations
     month_index = datetime.strptime(month_name, '%B').month
@@ -130,7 +125,6 @@ def export_monthly_data(group, query_type, month_name, output_folder):
         weekly_data = extract_weekly_data(group, query_type, week_index, month_index)
         for day_data in weekly_data:
             monthly_data_list.append(day_data)
-    for day in monthly_data_list:
-        logger.info(day);
+            logger.info(day_data);
     # export data into excel 
     return ExcelExporter.export_data_into_excel(monthly_data_list, month_name, output_folder)
