@@ -50,6 +50,9 @@ def get_weekly_data(group, query_type, week):
     except RequestException:
         logger.error(ExporterRequestErrorMessages.RequestExceptionMessage)
 
+#TODO: fix lecturer/week requests not getting proper info
+# lecturer doesn't get lectures properly
+# week data is empty
 def daily_regex_template(day, month):
     return '(<tr><td[^>]+>('+str(day)+',\s[0-9]{4}-[0]?'+str(month)+'-[0-9]{2})</td></tr>)'
 
@@ -125,6 +128,6 @@ def export_monthly_data(group, query_type, month_name, output_folder):
         weekly_data = extract_weekly_data(group, query_type, week_index, month_index)
         for day_data in weekly_data:
             monthly_data_list.append(day_data)
-            logger.info(day_data);
+            logger.info(day_data)
     # export data into excel 
     return ExcelExporter.export_data_into_excel(monthly_data_list, month_name, output_folder)

@@ -7,7 +7,7 @@ logger.info("Exporter Interface initializing...")
 
 QUERY_TYPES = ['Group',
                 'Lecturer',
-                'Week']
+                'Room']
 
 MONTHS = ['January',
             'February',
