@@ -1,24 +1,24 @@
 import hashlib
 import os
+import datetime
  
 # Get cwd and all script file names, plus the expected .exe in the build folder
 # If a file is missing or the structure does not match, this script will throw an error
 CWD = os.path.dirname(__file__)
 PARENT_CWD = os.path.dirname(CWD) 
-files = [
-    CWD + '\ExporterInterface.py',
-    CWD + '\ExporterRequestProcess.py',
-    CWD + '\ExcelExporter.py',
-    CWD + '\ExporterInterface.py',
-    CWD + '\ExporterLogger.py',
-    CWD + '\ExporterHashChecker.py',
-    PARENT_CWD + r'\build\dist\NvnaScheduleExporter.exe'
-]
+
+files = [PARENT_CWD + r'\build\dist\NvnaScheduleExporter.exe']
+
+for file in os.listdir(CWD):
+    if file.endswith(".py"):
+        files.append(os.path.join(CWD, file))
 
 # Set hash algorithm
 hash = hashlib.sha256()
 
-checksum_file = open('checksums.txt', 'w', encoding='UTF-8')
+# Overwrite file each time
+checksum_file = open(os.path.join(CWD, 'checksums.txt'), 'w', encoding='UTF-8')
+checksum_file.write("Last update at: " + str(datetime.datetime.now()) + "\n\n")
 
 # For each file
 for file in files:
