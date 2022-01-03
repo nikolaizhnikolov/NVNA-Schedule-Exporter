@@ -109,7 +109,7 @@ def extract_weekly_data(group, query_type, week, month):
     raw_data = get_weekly_data(group, query_type, week)
     return sanitize_weekly_data(raw_data, month)
 
-def export_monthly_data(group, query_type, month_name, output_folder):
+def export_monthly_data(group, query_type, month_name, output_folder, file_name):
     # Get index of month for calculations
     month_index = datetime.strptime(month_name, '%B').month
     # The date we are calculating against is the first of the month
@@ -130,4 +130,4 @@ def export_monthly_data(group, query_type, month_name, output_folder):
             monthly_data_list.append(day_data)
             logger.info(day_data)
     # export data into excel 
-    return ExcelExporter.export_data_into_excel(monthly_data_list, month_name, output_folder)
+    return ExcelExporter.export_data_into_excel(monthly_data_list, month_name, output_folder, file_name)

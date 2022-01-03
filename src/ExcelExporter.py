@@ -4,11 +4,11 @@ from openpyxl import Workbook
 workbook = Workbook()
 sheet = workbook.active
 
-def export_data_into_excel(data, month, folder):
+def export_data_into_excel(data, month, folder, file_name):
     now = datetime.today()    
     
-    filename = '/NvnaExport_' + month + '_' + str(date(now.year, now.month, now.day)) + '.xlsx'
-    fullpath = folder + filename
+    file_name = file_name + '.xlsx'
+    fullpath = folder + file_name
     for day in data:
         sheet.append(day)
         

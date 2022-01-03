@@ -46,33 +46,37 @@ group=              IntVar(value=config.group)
 query_type=         StringVar(value=config.query_type)
 month=              StringVar(value=config.month)
 export_directory=   StringVar(value=config.export_directory)
+export_file_name=   StringVar(value=config.export_file_name)
 
 def export():   
-    config.update_config(group.get(), query_type.get(), month.get(), export_directory.get())
+    config.update_config(group.get(), query_type.get(), month.get(), export_directory.get(), export_file_name.get())
     logger.info("Exporting data with the following parameters:")
     logger.info("Group: " + str(group.get()))
     logger.info("Query Type: " + query_type.get())
     logger.info("Month: " + month.get())
     logger.info("Default export folder: " + export_directory.get())
+    logger.info("Export file name: " + export_file_name.get())
 
     # Export data
     export_result = ExporterRequestProcess.export_monthly_data(group.get(),
                                                 query_type.get(),
                                                 month.get(),
-                                                export_directory.get())    
+                                                export_directory.get(),
+                                                export_file_name.get())    
     if export_result:
-        messagebox.showinfo(title="Success", message="Export created succesfully in: \n"+export_directory.get())
+        messagebox.showinfo(title="Success", message=export_file_name.get()+"created succesfully in: \n"+export_directory.get())
         logger.info("Export finished successfuly")
 
 # Create root frame, title, logo and weight for resizing
 root_frame.title('Nvna Schedule Exporter')
 root_frame.geometry("650x350")
 icon = PhotoImage(file=config.CWD+ r'\logo.png')
-root_frame.iconphoto(False, icon)
-# TODO weight configurations
+root_frame.iconphoto(True, icon)
+
 root_frame.columnconfigure(index='0 1 2 3 4', weight=1)
 root_frame.rowconfigure(index='0 1 2 3 4 5 6 7 8 9 10', weight=1)
 
+# Конфигурация на отстояния за лесно преизползване
 padx=[20, 10]
 padx_button=[60, 60]
 padxl=[20, 0]
@@ -110,7 +114,6 @@ ttk.OptionMenu(root_frame, month, month.get(), *INTERFACE_MONTHS).grid(
 uni_logo=(Image.open("logo.png"))
 uni_logo= uni_logo.resize((128, 128), Image.ANTIALIAS)
 uni_logo= ImageTk.PhotoImage(uni_logo)
-
 ttk.Label(root_frame, image=uni_logo).grid(
     column=4, row=0, rowspan=6,
     sticky=NSEW, 
@@ -135,7 +138,7 @@ ttk.Label(root_frame, text='Файл:').grid(
     column=0, row=9,
     sticky=NSEW,
     padx=padx, pady=padyt)
-ttk.Entry(root_frame, textvariable=export_directory).grid(
+ttk.Entry(root_frame, textvariable=export_file_name).grid(
     column=0, columnspan=3, row=10,
     sticky=NSEW,
     padx=padx, pady=padyb)
