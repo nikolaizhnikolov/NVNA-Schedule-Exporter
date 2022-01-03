@@ -1,5 +1,6 @@
 from tkinter import Tk, ttk, PhotoImage, filedialog, messagebox
 from tkinter import StringVar, IntVar, NSEW
+from PIL import Image, ImageTk 
 import ExporterConfig as config
 import ExporterRequestProcess, ExporterLogger as logger
 
@@ -65,71 +66,89 @@ def export():
 
 # Create root frame, title, logo and weight for resizing
 root_frame.title('Nvna Schedule Exporter')
+root_frame.geometry("650x350")
 icon = PhotoImage(file=config.CWD+ r'\logo.png')
 root_frame.iconphoto(False, icon)
 # TODO weight configurations
-root_frame.columnconfigure(index='0 1 2 3 4 5', weight=1)
+root_frame.columnconfigure(index='0 1 2 3 4', weight=1)
 root_frame.rowconfigure(index='0 1 2 3 4 5 6 7 8 9 10', weight=1)
 
 padx=[20, 10]
-pady=[10, 0]
+padx_button=[60, 60]
+padxl=[20, 0]
+padyt=[5, 0]
+padyb=[0, 20]
 # Създаване на визуални елементи
 # Поле за номер
 ttk.Label(root_frame, text='Номер:').grid(
     column=0, row=0,
     sticky=NSEW,
-    padx=padx, pady=pady)
-ttk.Entry(root_frame, textvariable=group, justify='right').grid(
-    column=0, columnspan=3, row=1, rowspan=2,
+    padx=padx, pady=padyt)
+ttk.Entry(root_frame, textvariable=group).grid(
+    column=0, columnspan=4, row=1, 
     sticky=NSEW,
     padx=padx)
 # Вид заявка
 ttk.Label(root_frame, text='Вид заявка:').grid(
-    column=0, row=3,
+    column=0, row=2,
     sticky=NSEW,
-    padx=padx, pady=pady)
+    padx=padx, pady=padyt)
 ttk.OptionMenu(root_frame, query_type, query_type.get(), *INTERFACE_QUERY_TYPES).grid(
-    column=0, columnspan=3, row=4, rowspan=2,
+    column=0, columnspan=4, row=3,
     sticky=NSEW,
     padx=padx)
 # Месец
 ttk.Label(root_frame, text='Месец:').grid(
-    column=0, row=7,
+    column=0, row=4,
     sticky=NSEW,
-    padx=padx, pady=pady)
+    padx=padx, pady=padyt)
 ttk.OptionMenu(root_frame, month, month.get(), *INTERFACE_MONTHS).grid(
-    column=0, columnspan=3, row=8, rowspan=2,
+    column=0, columnspan=4, row=5,
     sticky=NSEW,
     padx=padx)
+# Изображение
+uni_logo=(Image.open("logo.png"))
+uni_logo= uni_logo.resize((128, 128), Image.ANTIALIAS)
+uni_logo= ImageTk.PhotoImage(uni_logo)
+
+ttk.Label(root_frame, image=uni_logo).grid(
+    column=4, row=0, rowspan=6,
+    sticky=NSEW, 
+    padx=[70, 20], pady=[20, 0])
 # Директория
 ttk.Label(root_frame, text='Директория:').grid(
-    column=0, row=10,
+    column=0, row=6,
     sticky=NSEW,
-    padx=padx, pady=pady)
+    padx=padx, pady=padyt)
 ttk.Entry(root_frame, textvariable=export_directory).grid(
-    column=0, columnspan=4, row=11, rowspan=2,
+    column=0, columnspan=4, row=7,
     sticky=NSEW,
     padx=padx)
 browse_button_widget = ttk.Button(root_frame, text='Browse...')
 browse_button_widget.grid(
-    column=4, row=11, rowspan=2,
+    column=4, row=7,
     sticky=NSEW,
-    padx=padx)
+    padx=padx_button)
 browse_button_widget.bind('<ButtonPress>',lambda e: export_directory.set(filedialog.askdirectory()))
 # Файл
 ttk.Label(root_frame, text='Файл:').grid(
-    column=0, row=13,
+    column=0, row=9,
     sticky=NSEW,
-    padx=padx, pady=pady)
+    padx=padx, pady=padyt)
 ttk.Entry(root_frame, textvariable=export_directory).grid(
-    column=0, columnspan=3, row=14, rowspan=2,
+    column=0, columnspan=3, row=10,
     sticky=NSEW,
-    padx=padx, pady=[0, 10])
+    padx=padx, pady=padyb)
+ttk.Label(root_frame, text=".xlsx").grid(
+    column=3, row=10,
+    sticky=NSEW,
+    pady=padyb
+)
 browse_button_widget = ttk.Button(root_frame, text='Export', command=export)
 browse_button_widget.grid(
-    column=4, row=14, rowspan=2,
+    column=4, row=10,
     sticky=NSEW,
-    padx=padx, pady=[0, 10])
+    padx=padx_button, pady=padyb)
 
 # Loop root frame to visualise elements
 root_frame.mainloop()
