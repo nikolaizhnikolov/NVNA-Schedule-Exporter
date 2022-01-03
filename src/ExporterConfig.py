@@ -2,6 +2,7 @@ from datetime import date
 from genericpath import exists
 import os
 import ExporterLogger as logger
+import ExporterUtil as util
 import configparser
 
 CWD = os.getcwd()
@@ -38,7 +39,7 @@ def update_config(group, query_type, month, export_directory, export_file_name):
 create_config()
 
 group=              config_parser.get('request_parameters', 'group', fallback='0')
-query_type=         config_parser.get('request_parameters', 'query_type', fallback='Group')
-month=              config_parser.get('request_parameters', 'month', fallback=date.today().strftime('%B'))
+query_type=         config_parser.get('request_parameters', 'query_type', fallback=util.get_default_interface_query_type())
+month=              config_parser.get('request_parameters', 'month', fallback=util.get_interface_month(date.today().strftime('%B')))
 export_directory=   config_parser.get('request_parameters', 'export_directory', fallback=CWD)
 export_file_name=   config_parser.get('request_parameters', 'export_file_name', fallback="Export")

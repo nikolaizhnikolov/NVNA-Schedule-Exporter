@@ -1,46 +1,12 @@
 from tkinter import Tk, ttk, PhotoImage, filedialog, messagebox
 from tkinter import StringVar, IntVar, NSEW
 from PIL import Image, ImageTk 
+from ExporterUtil import INTERFACE_QUERY_TYPES, INTERFACE_MONTHS
 import ExporterConfig as config
 import ExporterRequestProcess, ExporterLogger as logger
 
 logger.info("Exporter Interface initializing...")
 
-QUERY_TYPES = ['Group',
-                'Lecturer',
-                'Room']
-
-INTERFACE_QUERY_TYPES = ['Класно отделение',
-                        'Преподавател',
-                        'Зала']
-
-MONTHS = ['January',
-            'February',
-            'March',
-            'April',
-            'May',
-            'June',
-            'July',
-            'August',
-            'September',
-            'October',
-            'November',
-            'December']
-
-INTERFACE_MONTHS = ['Януари',
-                    'Февруари',
-                    'Март',
-                    'Април',
-                    'Май',
-                    'Юни',
-                    'Юли',
-                    'Август',
-                    'Септември',
-                    'Октомври',
-                    'Ноември',
-                    'Декември']
-
-# TODO add new types of data
 root_frame = Tk()
 group=              IntVar(value=config.group)
 query_type=         StringVar(value=config.query_type)
