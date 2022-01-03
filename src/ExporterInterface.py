@@ -4,6 +4,7 @@ from PIL import Image, ImageTk
 from ExporterUtil import INTERFACE_QUERY_TYPES, INTERFACE_MONTHS
 import ExporterConfig as config
 import ExporterRequestProcess, ExporterLogger as logger
+import ExporterUtil as util
 
 logger.info("Exporter Interface initializing...")
 
@@ -16,21 +17,21 @@ export_file_name=   StringVar(value=config.export_file_name)
 
 def export():   
     config.update_config(group.get(), query_type.get(), month.get(), export_directory.get(), export_file_name.get())
-    logger.info("Exporting data with the following parameters:")
-    logger.info("Group: " + str(group.get()))
-    logger.info("Query Type: " + query_type.get())
-    logger.info("Month: " + month.get())
-    logger.info("Default export folder: " + export_directory.get())
-    logger.info("Export file name: " + export_file_name.get())
+    logger.info("Създаване на експорт със следните параметри:")
+    logger.info("Номер: " +         str(group.get()))
+    logger.info("Вид заявка: " +    query_type.get())
+    logger.info("Месец: " +         month.get())
+    logger.info("Папка: " +         export_directory.get())
+    logger.info("Име на файл: " +   export_file_name.get())
 
     # Export data
     export_result = ExporterRequestProcess.export_monthly_data(group.get(),
-                                                query_type.get(),
-                                                month.get(),
+                                                util.get_query_type(query_type.get()),
+                                                util.get_month(month.get()),
                                                 export_directory.get(),
                                                 export_file_name.get())    
     if export_result:
-        messagebox.showinfo(title="Success", message=export_file_name.get()+"created succesfully in: \n"+export_directory.get())
+        messagebox.showinfo(title="Success", message=export_file_name.get()+" created succesfully in: \n"+export_directory.get())
         logger.info("Export finished successfuly")
 
 # Create root frame, title, logo and weight for resizing
@@ -42,14 +43,14 @@ root_frame.iconphoto(True, icon)
 root_frame.columnconfigure(index='0 1 2 3 4', weight=1)
 root_frame.rowconfigure(index='0 1 2 3 4 5 6 7 8 9 10', weight=1)
 
-# Конфигурация на отстояния за лесно преизползване
+# Padding configuration for reuse
 padx=[20, 10]
 padx_button=[60, 60]
 padxl=[20, 0]
 padyt=[5, 0]
 padyb=[0, 20]
-# Създаване на визуални елементи
-# Поле за номер
+# Visual elements creation
+# Number
 ttk.Label(root_frame, text='Номер:').grid(
     column=0, row=0,
     sticky=NSEW,
@@ -58,7 +59,7 @@ ttk.Entry(root_frame, textvariable=group).grid(
     column=0, columnspan=4, row=1, 
     sticky=NSEW,
     padx=padx)
-# Вид заявка
+# Query type
 ttk.Label(root_frame, text='Вид заявка:').grid(
     column=0, row=2,
     sticky=NSEW,
@@ -67,7 +68,7 @@ ttk.OptionMenu(root_frame, query_type, query_type.get(), *INTERFACE_QUERY_TYPES)
     column=0, columnspan=4, row=3,
     sticky=NSEW,
     padx=padx)
-# Месец
+# Month
 ttk.Label(root_frame, text='Месец:').grid(
     column=0, row=4,
     sticky=NSEW,
@@ -76,7 +77,7 @@ ttk.OptionMenu(root_frame, month, month.get(), *INTERFACE_MONTHS).grid(
     column=0, columnspan=4, row=5,
     sticky=NSEW,
     padx=padx)
-# Изображение
+# Image
 uni_logo=(Image.open("logo.png"))
 uni_logo= uni_logo.resize((128, 128), Image.ANTIALIAS)
 uni_logo= ImageTk.PhotoImage(uni_logo)
@@ -84,7 +85,7 @@ ttk.Label(root_frame, image=uni_logo).grid(
     column=4, row=0, rowspan=6,
     sticky=NSEW, 
     padx=[70, 20], pady=[20, 0])
-# Директория
+# Export directory
 ttk.Label(root_frame, text='Директория:').grid(
     column=0, row=6,
     sticky=NSEW,
@@ -99,7 +100,7 @@ browse_button_widget.grid(
     sticky=NSEW,
     padx=padx_button)
 browse_button_widget.bind('<ButtonPress>',lambda e: export_directory.set(filedialog.askdirectory()))
-# Файл
+# File name
 ttk.Label(root_frame, text='Файл:').grid(
     column=0, row=9,
     sticky=NSEW,
