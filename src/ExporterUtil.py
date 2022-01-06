@@ -61,7 +61,9 @@ def daily_schedule_regex_template():
 
 def no_lecture_regex_template():
     return '(<tr><td[^>]+>Няма занятия</td></tr>)'
-    
+
+# This regex works for groups and rooms, the last added conditional <td> 
+# is required to make it work for lecturers as well
 def lecture_regex_template():
     return '''<tr>
                 <td>([0-9])</td>
@@ -69,5 +71,6 @@ def lecture_regex_template():
                 <td[^>]*>([^<]*)</td>
                 <td[^>]*>([^<]*)</td>
                 <td[^>]*>([^<]*)</td>
+                (<td[^>]*>([^<]*)</td>)?
             </tr>'''
             
