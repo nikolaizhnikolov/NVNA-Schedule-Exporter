@@ -7,10 +7,11 @@ import ExcelExporter
 import re
 import unicodedata
 import ExporterLogger as logger
+import ExporterUtil as util
 
-url = 'https://nvna.eu/wp/'
+URL = 'https://nvna.eu/wp/'
 
-weekdays = ['Понеделник',
+WEEKDAYS = ['Понеделник',
             'Вторник',
             'Сряда',
             'Четвъртък',
@@ -18,7 +19,7 @@ weekdays = ['Понеделник',
             'Събота',
             'Неделя']
 
-flags =  re.IGNORECASE | re.UNICODE | re.MULTILINE | re.VERBOSE
+FLAGS =  re.IGNORECASE | re.UNICODE | re.MULTILINE | re.VERBOSE
 
 class ExporterRequestErrorMessages:
     ConnectionErrorMessage = "A connection error has occured"
@@ -36,7 +37,7 @@ def get_weekly_data(group, query_type, week):
             'queryType':    query_type.lower(),
             'Week':         week}
 
-        request = requests.put(url, params=request_parameters, timeout=5)
+        request = requests.put(URL, params=request_parameters, timeout=5)
         if request.status_code != requests.codes['ok']:
             raise HTTPError
         return(request.text)
@@ -50,34 +51,13 @@ def get_weekly_data(group, query_type, week):
     except RequestException:
         logger.error(ExporterRequestErrorMessages.RequestExceptionMessage)
 
-#TODO: fix lecturer/week requests not getting proper info
-# lecturer doesn't get lectures properly
-# week data is empty
-def daily_regex_template(day, month):
-    return '(<tr><td[^>]+>('+str(day)+',\s[0-9]{4}-[0]?'+str(month)+'-[0-9]{2})</td></tr>)'
-
-def daily_schedule_regex_template():
-    return '(<tr>(<td[^<]+</td>){1,6}</tr>){13}'
-
-def no_lecture_regex_template():
-    return '(<tr><td[^>]+>Няма занятия</td></tr>)'
-    
-def lecture_regex_template():
-    return '''<tr>
-                <td>([0-9])</td>
-                <td[^>]*>([0-9]{1,2}:[0-9]{2}-[0-9]{1,2}:[0-9]{2})</td>
-                <td[^>]*>([^<]*)</td>
-                <td[^>]*>([^<]*)</td>
-                <td[^>]*>([^<]*)</td>
-            </tr>'''
-
 def sanitize_weekly_data(raw_data, month) -> list:
     # Create weekly list
     weekly_data = []
-    for weekday in weekdays:
+    for weekday in WEEKDAYS:
         # For each day of the week
         # Try no lectures first
-        no_lecture_regex = re.compile(daily_regex_template(weekday, month) + no_lecture_regex_template())
+        no_lecture_regex = re.compile(util.daily_regex_template(weekday, month) + util.no_lecture_regex_template())
         no_lecture = no_lecture_regex.search(raw_data)
         # If found then there were no lectures for that day
         if no_lecture != None:
@@ -87,11 +67,11 @@ def sanitize_weekly_data(raw_data, month) -> list:
             weekly_data.append(daily_data)       
         # Else - get a regex for the whole day, then search it for any lecture templates  
         else:
-            lectures_schedule_regex = re.compile(daily_regex_template(weekday, month) + daily_schedule_regex_template(), flags)
+            lectures_schedule_regex = re.compile(util.daily_regex_template(weekday, month) + util.daily_schedule_regex_template(), FLAGS)
             lectures_schedule = lectures_schedule_regex.search(raw_data)
             
             if lectures_schedule != None:
-                lectures_regex = re.compile(lecture_regex_template(), flags)
+                lectures_regex = re.compile(util.lecture_regex_template(), FLAGS)
                 lectures = lectures_regex.findall(lectures_schedule.group(0))
                 if lectures.__len__ != 0:
                     daily_data = []
