@@ -8,6 +8,7 @@ import re
 import unicodedata
 import ExporterLogger as logger
 import ExporterUtil as util
+import ExporterRequestErrorMessages as err_msgs
 
 URL = 'https://nvna.eu/wp/'
 
@@ -20,15 +21,6 @@ WEEKDAYS = ['Понеделник',
             'Неделя']
 
 FLAGS =  re.IGNORECASE | re.UNICODE | re.MULTILINE | re.VERBOSE
-
-class ExporterRequestErrorMessages:
-    ConnectionErrorMessage = "A connection error has occured"
-    TimeoutErrorMessage = "Request timeout. \
-                           Requests stay idle for no more than 1 second \
-                           of not receiving any packages!"
-    HTTPErrorMessage = "Request not successful"
-    RequestExceptionMessage = "There was an ambiguous exception that \
-                               occurred while handling your request."
 
 def get_weekly_data(group, query_type, week):
     try:
@@ -43,13 +35,13 @@ def get_weekly_data(group, query_type, week):
         return(request.text)
     
     except ConnectionError:
-        logger.error(ExporterRequestErrorMessages.ConnectionErrorMessage)
+        logger.error(err_msgs.ConnectionErrorMessage)
     except HTTPError:
-        logger.error(ExporterRequestErrorMessages.HTTPErrorMessage)
+        logger.error(err_msgs.HTTPErrorMessage)
     except TimeoutError:
-        logger.error(ExporterRequestErrorMessages.TimeoutErrorMessage)
+        logger.error(err_msgs.TimeoutErrorMessage)
     except RequestException:
-        logger.error(ExporterRequestErrorMessages.RequestExceptionMessage)
+        logger.error(err_msgs.RequestExceptionMessage)
 
 def sanitize_weekly_data(raw_data, month) -> list:
     # Create weekly list
