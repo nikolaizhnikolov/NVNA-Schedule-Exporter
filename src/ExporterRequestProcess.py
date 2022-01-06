@@ -57,7 +57,7 @@ def daily_regex_template(day, month):
     return '(<tr><td[^>]+>('+str(day)+',\s[0-9]{4}-[0]?'+str(month)+'-[0-9]{2})</td></tr>)'
 
 def daily_schedule_regex_template():
-    return '(<tr>(<td[^<]+</td>){1,5}</tr>){13}'
+    return '(<tr>(<td[^<]+</td>){1,6}</tr>){13}'
 
 def no_lecture_regex_template():
     return '(<tr><td[^>]+>Няма занятия</td></tr>)'
@@ -102,7 +102,7 @@ def sanitize_weekly_data(raw_data, month) -> list:
                         daily_data.append(str.strip(lecture[2]));
                         daily_data.append(lecture[3]);
                         daily_data.append(unicodedata.normalize("NFKD", lecture[4]));
-                        weekly_data.append(daily_data);
+                    weekly_data.append(daily_data);
     return weekly_data
 
 def extract_weekly_data(group, query_type, week, month):
@@ -118,6 +118,7 @@ def export_monthly_data(group, query_type, month_name, output_folder, file_name)
     first_week_index = export_date.isocalendar().week
     weeks_in_month = len(calendar.monthcalendar(export_date.year, export_date.month))
     weeks_in_month = range(weeks_in_month)
+    
     # Create empty list to store daily results
     logger.info('Getting schedule for Month: ' + str(month_name))
     monthly_data_list = []
@@ -129,5 +130,6 @@ def export_monthly_data(group, query_type, month_name, output_folder, file_name)
         for day_data in weekly_data:
             monthly_data_list.append(day_data)
             logger.info(day_data)
-    # export data into excel 
+            
+    # Export data into excel file
     return ExcelExporter.export_data_into_excel(monthly_data_list, month_name, output_folder, file_name)
