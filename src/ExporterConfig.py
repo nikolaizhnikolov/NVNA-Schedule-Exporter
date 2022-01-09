@@ -25,16 +25,17 @@ def create_config():
         config_parser.add_section('request_parameters')
         
 
-def update_config(group, query_type, month, export_directory, export_file_name):
-    # Проверка за съществуване на файл и секция
+def update_config(group, query_type, month, export_directory, export_file_name, export_file_type):
+    # Check file and section exist
     create_config()
-    # Запаметяване на пареметри
+    # Set parameters
     config_parser.set('request_parameters', 'group', group)
     config_parser.set('request_parameters', 'query_type', query_type)
     config_parser.set('request_parameters', 'month', month)
-    config_parser.set('request_parameters', 'export_directory', export_directory)  
-    config_parser.set('request_parameters', 'export_file_name', export_file_name)   
-    
+    config_parser.set('request_parameters', 'export_directory', export_directory)
+    config_parser.set('request_parameters', 'export_file_name', export_file_name)
+    config_parser.set('request_parameters', 'export_file_type', export_file_type)
+    # Re/write into config file
     with open(CWD+'\exporter_config.cfg', 'w', encoding='UTF-8') as config_file:
         config_parser.write(config_file)     
         
@@ -46,3 +47,4 @@ query_type=         config_parser.get('request_parameters', 'query_type', fallba
 month=              config_parser.get('request_parameters', 'month', fallback=util.get_interface_month(date.today().strftime('%B')))
 export_directory=   config_parser.get('request_parameters', 'export_directory', fallback=CWD)
 export_file_name=   config_parser.get('request_parameters', 'export_file_name', fallback="Export")
+export_file_type=   config_parser.get('request_parameters', 'export_file_type', fallback=util.get_default_export_type())

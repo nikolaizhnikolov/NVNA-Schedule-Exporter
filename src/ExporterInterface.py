@@ -8,7 +8,7 @@ import ExporterConfig as config
 import ExporterLogger as logger
 import ExporterRequestProcess
 import ExporterUtil as util
-from ExporterUtil import INTERFACE_MONTHS, INTERFACE_QUERY_TYPES
+from ExporterUtil import EXPORT_TYPES, INTERFACE_MONTHS, INTERFACE_QUERY_TYPES
 
 logger.info("Exporter Interface initializing...")
 
@@ -18,17 +18,19 @@ query_type=         StringVar(value=config.query_type)
 month=              StringVar(value=config.month)
 export_directory=   StringVar(value=config.export_directory)
 export_file_name=   StringVar(value=config.export_file_name)
+export_file_type=   StringVar(value=config.export_file_type)
 
 # Save loaded data into config file and attempt export
 # If succesfull show dialog message and log
 def export():   
-    config.update_config(group.get(), query_type.get(), month.get(), export_directory.get(), export_file_name.get())
+    config.update_config(group.get(), query_type.get(), month.get(), export_directory.get(), export_file_name.get(), export_file_type.get())
     logger.info("Creating export with the following parameters:")
     logger.info("Group: " +         str(group.get()))
     logger.info("Query type: " +    query_type.get())
     logger.info("Month: " +         month.get())
     logger.info("Export directory: " +         export_directory.get())
     logger.info("Export file name: " +   export_file_name.get())
+    logger.info("Export file type: " +   export_file_type.get())
 
     export_result = ExporterRequestProcess.export_monthly_data(group.get(),
                                                 util.get_query_type(query_type.get()),
@@ -123,11 +125,16 @@ ttk.Entry(root_frame, textvariable=export_file_name).grid(
     column=0, columnspan=3, row=10,
     sticky=NSEW,
     padx=padx, pady=padyb)
-ttk.Label(root_frame, text=".xlsx").grid(
+export_file_type_widget = ttk.OptionMenu(
+    root_frame, 
+    export_file_type, 
+    export_file_type.get(), 
+    *EXPORT_TYPES)
+export_file_type_widget.grid(
     column=3, row=10,
     sticky=NSEW,
-    pady=padyb
-)
+    pady=padyb)
+export_file_type_widget.configure(width=5)
 browse_button_widget = ttk.Button(root_frame, text='Export', command=export)
 browse_button_widget.grid(
     column=4, row=10,

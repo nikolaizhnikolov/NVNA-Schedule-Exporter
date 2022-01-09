@@ -35,6 +35,10 @@ INTERFACE_MONTHS = ['Януари',
                     'Ноември',
                     'Декември']
 
+EXPORT_TYPES = ['.xlsx',
+                '.word',
+                '.txt']
+
 def get_query_type(interface_type):
     return QUERY_TYPES[INTERFACE_QUERY_TYPES.index(interface_type)]
 
@@ -49,6 +53,9 @@ def get_month(interface_month):
 
 def get_interface_month(month):
     return INTERFACE_MONTHS[MONTHS.index(month)]
+
+def get_default_export_type():
+    return EXPORT_TYPES[0]
 
 # =============================================================================
 # ============================= REGEX TEMPLATES ===============================
