@@ -36,9 +36,9 @@ INTERFACE_MONTHS = ['Януари',
                     'Декември']
 
 EXPORT_TYPES = ['.xlsx',
-                '.word',
+                '.docx',
                 '.txt']
-                
+
 class ExportTypes: 
     EXCEL=      '.xlsx'
     WORD=       '.docx'
