@@ -67,15 +67,15 @@ def sanitize_weekly_data(raw_data, month) -> list:
                 lectures = lectures_regex.findall(lectures_schedule.group(0))
                 if lectures.__len__ != 0:
                     daily_data = []
-                    daily_data.append(lectures_schedule.group(2));
+                    daily_data.append(lectures_schedule.group(2))
                     for lecture in lectures:   
-                        daily_data.append(lecture[0])
-                        daily_data.append(lecture[1])
+                        daily_data.append(str.strip(lecture[0]))
+                        daily_data.append(str.strip(lecture[1]))
                         daily_data.append(str.strip(lecture[2]))
-                        daily_data.append(lecture[3])
+                        daily_data.append(str.strip(lecture[3]))
                         daily_data.append(unicodedata.normalize("NFKD", lecture[4]))
                         if (lecture[5] is not None):
-                            daily_data.append(lecture[6])
+                            daily_data.append(str.strip(lecture[6]))
                     weekly_data.append(daily_data)
     return weekly_data
 
