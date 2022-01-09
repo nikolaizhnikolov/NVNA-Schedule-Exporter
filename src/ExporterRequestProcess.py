@@ -106,6 +106,4 @@ def export_monthly_data(group, query_type, month_name, output_folder, file_name,
             logger.info(day_data)
             
     # Export data
-    FileExporter.export_file(monthly_data_list, output_folder, file_name, file_type)
-
-
+    return FileExporter.export_file(monthly_data_list, output_folder, file_name, file_type)
