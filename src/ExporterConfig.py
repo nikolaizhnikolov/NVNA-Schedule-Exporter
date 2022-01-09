@@ -5,7 +5,10 @@ import ExporterLogger as logger
 import ExporterUtil as util
 import configparser
 
-CWD = os.getcwd()
+# CWD is relative to the source files
+CWD = os.path.dirname(os.path.realpath(__file__)) # os.getcwd()
+CWD = CWD.removesuffix(r'\src')
+print('CWD is: ' + CWD)
 CONFIG_PATH = CWD + '\exporter_config.cfg'
 
 logger.info("Current working directory set to:" + CWD)
