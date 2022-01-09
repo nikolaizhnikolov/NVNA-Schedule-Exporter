@@ -36,7 +36,8 @@ def export():
                                                 util.get_query_type(query_type.get()),
                                                 util.get_month(month.get()),
                                                 export_directory.get(),
-                                                export_file_name.get())    
+                                                export_file_name.get(),
+                                                export_file_type.get())    
     if export_result:
         messagebox.showinfo(title="Success", message=export_file_name.get()+" created succesfully in: \n"+export_directory.get())
         logger.info("Excel export finished successfuly")

@@ -3,7 +3,7 @@ from requests import RequestException
 from requests.models import HTTPError
 import calendar
 import requests
-import ExcelExporter
+import FileExporter
 import re
 import unicodedata
 import ExporterLogger as logger
@@ -83,7 +83,7 @@ def extract_weekly_data(group, query_type, week, month):
     raw_data = get_weekly_data(group, query_type, week)
     return sanitize_weekly_data(raw_data, month)
 
-def export_monthly_data(group, query_type, month_name, output_folder, file_name):
+def export_monthly_data(group, query_type, month_name, output_folder, file_name, file_type):
     # Get index of month for calculations
     month_index = datetime.strptime(month_name, '%B').month
     # The date we are calculating against is the first of the month
@@ -105,5 +105,7 @@ def export_monthly_data(group, query_type, month_name, output_folder, file_name)
             monthly_data_list.append(day_data)
             logger.info(day_data)
             
-    # Export data into excel file
-    return ExcelExporter.export_data_into_excel(monthly_data_list, month_name, output_folder, file_name)
+    # Export data
+    FileExporter.export_file(monthly_data_list, output_folder, file_name, file_type)
+
+
