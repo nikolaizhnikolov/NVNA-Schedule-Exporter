@@ -48,8 +48,8 @@ root_frame.geometry("650x350")
 icon = PhotoImage(file=r'assets\logo.png')
 root_frame.iconphoto(True, icon)
 
-root_frame.columnconfigure(index='0 1 2 3 4', weight=1)
-root_frame.rowconfigure(index='0 1 2 3 4 5 6 7 8 9 10', weight=1)
+# root_frame.columnconfigure(index='0 1 2 3 4', weight=1)
+# root_frame.rowconfigure(index='0 1 2 3 4 5 6 7 8 9 10', weight=1)
 
 # Padding configuration for reuse
 padx=       [20, 10]
@@ -60,37 +60,37 @@ padyb=      [0, 20]
 
 # Visual elements creation
 # Notebook for containing tabs and frame(tab) creation
-# notebook=ttk.Notebook(root_frame, name='monthly reports')
-# excel_frame=ttk.Frame(root_frame, name='tab1')
-# excel_frame.columnconfigure(index='0 1 2 3 4', weight=1)
-# excel_frame.rowconfigure(index='0 1 2 3 4 5 6 7 8 9 10', weight=1)
-# notebook.add(excel_frame, text='Месечни доклади')
-# notebook.select(0)
-# notebook.pack(expand=1, fill='both')
+notebook=ttk.Notebook(root_frame, name='monthly reports')
+excel_frame=ttk.Frame(root_frame, name='tab1')
+excel_frame.columnconfigure(index='0 1 2 3 4', weight=1)
+excel_frame.rowconfigure(index='0 1 2 3 4 5 6 7 8 9 10', weight=1)
+notebook.add(excel_frame, text='Месечни доклади')
+notebook.select(0)
+notebook.pack(expand=1, fill='both')
 # Number
-ttk.Label(root_frame, text='Номер:').grid(
+ttk.Label(excel_frame, text='Номер:').grid(
     column=0, row=0,
     sticky=NSEW,
     padx=padx, pady=padyt)
-ttk.Entry(root_frame, textvariable=group).grid(
+ttk.Entry(excel_frame, textvariable=group).grid(
     column=0, columnspan=4, row=1, 
     sticky=NSEW,
     padx=padx)
 # Query type
-ttk.Label(root_frame, text='Вид заявка:').grid(
+ttk.Label(excel_frame, text='Вид заявка:').grid(
     column=0, row=2,
     sticky=NSEW,
     padx=padx, pady=padyt)
-ttk.OptionMenu(root_frame, query_type, query_type.get(), *INTERFACE_QUERY_TYPES).grid(
+ttk.OptionMenu(excel_frame, query_type, query_type.get(), *INTERFACE_QUERY_TYPES).grid(
     column=0, columnspan=4, row=3,
     sticky=NSEW,
     padx=padx)
 # Month
-ttk.Label(root_frame, text='Месец:').grid(
+ttk.Label(excel_frame, text='Месец:').grid(
     column=0, row=4,
     sticky=NSEW,
     padx=padx, pady=padyt)
-ttk.OptionMenu(root_frame, month, month.get(), *INTERFACE_MONTHS).grid(
+ttk.OptionMenu(excel_frame, month, month.get(), *INTERFACE_MONTHS).grid(
     column=0, columnspan=4, row=5,
     sticky=NSEW,
     padx=padx)
@@ -98,36 +98,36 @@ ttk.OptionMenu(root_frame, month, month.get(), *INTERFACE_MONTHS).grid(
 uni_logo=(Image.open(r'assets\logo.png'))
 uni_logo= uni_logo.resize((128, 128), Image.ANTIALIAS)
 uni_logo= ImageTk.PhotoImage(uni_logo)
-ttk.Label(root_frame, image=uni_logo).grid(
+ttk.Label(excel_frame, image=uni_logo).grid(
     column=4, row=0, rowspan=6,
     sticky=NSEW, 
     padx=[70, 20], pady=[20, 0])
 # Export directory
-ttk.Label(root_frame, text='Директория:').grid(
+ttk.Label(excel_frame, text='Директория:').grid(
     column=0, row=6,
     sticky=NSEW,
     padx=padx, pady=padyt)
-ttk.Entry(root_frame, textvariable=export_directory).grid(
+ttk.Entry(excel_frame, textvariable=export_directory).grid(
     column=0, columnspan=4, row=7,
     sticky=NSEW,
     padx=padx)
-browse_button_widget = ttk.Button(root_frame, text='Browse...')
+browse_button_widget = ttk.Button(excel_frame, text='Browse...')
 browse_button_widget.grid(
     column=4, row=7,
     sticky=NSEW,
     padx=padx_button)
 browse_button_widget.bind('<ButtonPress>',lambda e: export_directory.set(filedialog.askdirectory()))
 # File name
-ttk.Label(root_frame, text='Файл:').grid(
+ttk.Label(excel_frame, text='Файл:').grid(
     column=0, row=9,
     sticky=NSEW,
     padx=padx, pady=padyt)
-ttk.Entry(root_frame, textvariable=export_file_name).grid(
+ttk.Entry(excel_frame, textvariable=export_file_name).grid(
     column=0, columnspan=3, row=10,
     sticky=NSEW,
     padx=padx, pady=padyb)
 export_file_type_widget = ttk.OptionMenu(
-    root_frame, 
+    excel_frame, 
     export_file_type, 
     export_file_type.get(), 
     *EXPORT_TYPES)
@@ -136,7 +136,7 @@ export_file_type_widget.grid(
     sticky=NSEW,
     pady=padyb)
 export_file_type_widget.configure(width=5)
-browse_button_widget = ttk.Button(root_frame, text='Export', command=export)
+browse_button_widget = ttk.Button(excel_frame, text='Export', command=export)
 browse_button_widget.grid(
     column=4, row=10,
     sticky=NSEW,
