@@ -87,3 +87,5 @@ def lecture_regex_template():
                 (<td[^>]*>([^<]*)</td>)?
             </tr>'''
             
+
+# TODO: add table 

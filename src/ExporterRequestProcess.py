@@ -104,6 +104,8 @@ def export_monthly_data(group, query_type, month_name, output_folder, file_name,
         for day_data in weekly_data:
             monthly_data_list.append(day_data)
             logger.info(day_data)
-            
+
     # Export data
+    # TODO: send query_type as an extra parameter so
+    # the exporter can choose how to format it
     return FileExporter.export_file(monthly_data_list, output_folder, file_name, file_type)

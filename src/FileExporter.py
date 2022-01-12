@@ -7,6 +7,12 @@ from ExporterUtil import ExportTypes
 workbook = Workbook()
 sheet = workbook.active
 
+# TODO: add query_type as a parameter somewhere here
+# TODO: refactor this whole file 
+# have a single export into excel for monthly reports 
+# then a different function for each simple export, 
+#   which will format the data inside the function body depending on query_type
+
 def export_file(data, folder, file_name, file_type):
     file_type = str(file_type)
     if(file_type.__eq__(ExportTypes.EXCEL)):

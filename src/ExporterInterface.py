@@ -11,6 +11,8 @@ import ExporterUtil as util
 from ExporterUtil import EXPORT_TYPES, INTERFACE_MONTHS, INTERFACE_QUERY_TYPES
 
 logger.info("Exporter Interface initializing...")
+# TODO add hash check on init
+# TODO make hash check against GITHUB instead of locally for it to actually make sense
 
 root_frame = Tk()
 group=              IntVar(value=config.group)
@@ -67,6 +69,8 @@ excel_frame.rowconfigure(index='0 1 2 3 4 5 6 7 8 9 10', weight=1)
 notebook.add(excel_frame, text='Месечни доклади')
 notebook.select(0)
 notebook.pack(expand=1, fill='both')
+# TODO add new notebook tab for exporting .excel/.word/.txt 
+# simply formatted files for easy print
 # Number
 ttk.Label(excel_frame, text='Номер:').grid(
     column=0, row=0,
