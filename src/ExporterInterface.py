@@ -1,5 +1,5 @@
-from tkinter import (NSEW, IntVar, PhotoImage, StringVar, Tk, filedialog,
-                     messagebox, ttk)
+from tkinter import (NSEW, NS, N, IntVar, PhotoImage, StringVar, Tk, filedialog,
+                     messagebox, ttk, font)
 from tkinter.constants import BOTH
 
 from PIL import Image, ImageTk
@@ -24,7 +24,7 @@ export_file_type=   StringVar(value=config.export_file_type)
 
 # Save loaded data into config file and attempt export
 # If succesfull show dialog message and log
-def export():   
+def export():
     config.update_config(group.get(), query_type.get(), month.get(), export_directory.get(), export_file_name.get(), export_file_type.get())
     logger.info("Creating export with the following parameters:")
     logger.info("Group: " +         str(group.get()))
@@ -62,89 +62,98 @@ padyb=      [0, 20]
 
 # Visual elements creation
 # Notebook for containing tabs and frame(tab) creation
-notebook=ttk.Notebook(root_frame, name='monthly reports')
+notebook=ttk.Notebook(root_frame, name='notebook')
 excel_frame=ttk.Frame(root_frame, name='tab1')
 excel_frame.columnconfigure(index='0 1 2 3 4', weight=1)
 excel_frame.rowconfigure(index='0 1 2 3 4 5 6 7 8 9 10', weight=1)
+info_frame=ttk.Frame(root_frame, name='tab2')
+info_frame.columnconfigure(index='0 1 2 3', weight=1)
+info_frame.rowconfigure(index='0 1 2 3 4 5', weight=1)
 notebook.add(excel_frame, text='Месечни доклади')
-notebook.select(0)
+notebook.add(info_frame, text='Седмици')
+notebook.select(1)
 notebook.pack(expand=1, fill='both')
 # TODO add new notebook tab for exporting .excel/.word/.txt 
 # simply formatted files for easy print
+
+# ==========================================================================
+# ============================ EXCEL_FRAME =================================
+# ==========================================================================
 # Number
 ttk.Label(excel_frame, text='Номер:').grid(
     column=0, row=0,
-    sticky=NSEW,
-    padx=padx, pady=padyt)
+    sticky=NSEW, padx=padx, pady=padyt)
 ttk.Entry(excel_frame, textvariable=group).grid(
     column=0, columnspan=4, row=1, 
-    sticky=NSEW,
-    padx=padx)
+    sticky=NSEW, padx=padx)
 # Query type
 ttk.Label(excel_frame, text='Вид заявка:').grid(
     column=0, row=2,
-    sticky=NSEW,
-    padx=padx, pady=padyt)
+    sticky=NSEW, padx=padx, pady=padyt)
 ttk.OptionMenu(excel_frame, query_type, query_type.get(), *INTERFACE_QUERY_TYPES).grid(
     column=0, columnspan=4, row=3,
-    sticky=NSEW,
-    padx=padx)
+    sticky=NSEW, padx=padx)
 # Month
 ttk.Label(excel_frame, text='Месец:').grid(
     column=0, row=4,
-    sticky=NSEW,
-    padx=padx, pady=padyt)
+    sticky=NSEW, padx=padx, pady=padyt)
 ttk.OptionMenu(excel_frame, month, month.get(), *INTERFACE_MONTHS).grid(
     column=0, columnspan=4, row=5,
-    sticky=NSEW,
-    padx=padx)
+    sticky=NSEW, padx=padx)
 # Image
 uni_logo=(Image.open(r'assets\logo.png'))
 uni_logo= uni_logo.resize((128, 128), Image.ANTIALIAS)
 uni_logo= ImageTk.PhotoImage(uni_logo)
 ttk.Label(excel_frame, image=uni_logo).grid(
     column=4, row=0, rowspan=6,
-    sticky=NSEW, 
-    padx=[70, 20], pady=[20, 0])
+    sticky=NSEW, padx=[70, 20], pady=[20, 0])
 # Export directory
 ttk.Label(excel_frame, text='Директория:').grid(
     column=0, row=6,
-    sticky=NSEW,
-    padx=padx, pady=padyt)
+    sticky=NSEW, padx=padx, pady=padyt)
 ttk.Entry(excel_frame, textvariable=export_directory).grid(
     column=0, columnspan=4, row=7,
-    sticky=NSEW,
-    padx=padx)
+    sticky=NSEW, padx=padx)
 browse_button_widget = ttk.Button(excel_frame, text='Browse...')
 browse_button_widget.grid(
     column=4, row=7,
-    sticky=NSEW,
-    padx=padx_button)
+    sticky=NSEW, padx=padx_button)
 browse_button_widget.bind('<ButtonPress>',lambda e: export_directory.set(filedialog.askdirectory()))
 # File name
 ttk.Label(excel_frame, text='Файл:').grid(
     column=0, row=9,
-    sticky=NSEW,
-    padx=padx, pady=padyt)
+    sticky=NSEW, padx=padx, pady=padyt)
 ttk.Entry(excel_frame, textvariable=export_file_name).grid(
     column=0, columnspan=3, row=10,
-    sticky=NSEW,
-    padx=padx, pady=padyb)
+    sticky=NSEW, padx=padx, pady=padyb)
 export_file_type_widget = ttk.OptionMenu(
-    excel_frame, 
-    export_file_type, 
-    export_file_type.get(), 
-    *EXPORT_TYPES)
+    excel_frame, export_file_type, export_file_type.get(), *EXPORT_TYPES)
 export_file_type_widget.grid(
     column=3, row=10,
-    sticky=NSEW,
-    pady=padyb)
+    sticky=NSEW, pady=padyb)
 export_file_type_widget.configure(width=5)
 browse_button_widget = ttk.Button(excel_frame, text='Export', command=export)
 browse_button_widget.grid(
     column=4, row=10,
-    sticky=NSEW,
-    padx=padx_button, pady=padyb)
+    sticky=NSEW, padx=padx_button, pady=padyb)
+
+# ==========================================================================
+# ============================ INFO_FRAME ==================================
+# ==========================================================================
+year = 2022
+week_indices = util.get_weekly_indices(year)
+# default_font = font.nametofont("TkDefaultFont").copy()
+# default_font.configure(size=12, weight='bold')
+for month, index in zip(util.INTERFACE_MONTHS, range(12)):
+    ttk.Label(info_frame, text=month).grid(
+        column=index%4, row=(index//4)*2,
+        sticky=NS
+    )
+    ttk.Label(info_frame, text=week_indices[index]).grid(
+        column=index%4, row=(index//4)*2+1,
+        sticky=N
+    )
+
 
 # Loop root frame to visualise elements
 root_frame.mainloop()

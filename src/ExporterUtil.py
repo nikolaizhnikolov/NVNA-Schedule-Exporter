@@ -1,3 +1,6 @@
+from datetime import date, datetime
+import calendar
+
 # =============================================================================
 # ============================= ENUMS =========================================
 # =============================================================================
@@ -48,20 +51,47 @@ class ExportTypes:
 def get_query_type(interface_type):
     return QUERY_TYPES[INTERFACE_QUERY_TYPES.index(interface_type)]
 
+
 def get_interface_query_type(type):
     return INTERFACE_QUERY_TYPES[QUERY_TYPES.index(type)]
+
 
 def get_default_interface_query_type():
     return INTERFACE_QUERY_TYPES[1]
 
+
 def get_month(interface_month):
     return MONTHS[INTERFACE_MONTHS.index(interface_month)]
+
 
 def get_interface_month(month):
     return INTERFACE_MONTHS[MONTHS.index(month)]
 
+
 def get_default_export_type():
     return ExportTypes.EXCEL
+
+
+def get_weekly_indices_for_month(month):
+    # Get month index
+    month_index = datetime.strptime(month, '%B').month
+    # Normalize using the first date of the month
+    export_date = date.today().replace(day=1, month=month_index)
+    # We find the first week and the number of weeks
+    first_week_index = export_date.isocalendar().week
+    if [0, 52, 53].__contains__(first_week_index):
+        first_week_index = 1
+    weeks_in_month = len(calendar.monthcalendar(export_date.year, export_date.month))
+    
+    return list(range(first_week_index, first_week_index+weeks_in_month))
+
+
+def get_weekly_indices(year):
+    yearly_indices = []
+    for month in MONTHS:        
+        yearly_indices.append(get_weekly_indices_for_month(month))
+    return yearly_indices
+
 
 # =============================================================================
 # ============================= REGEX TEMPLATES ===============================
