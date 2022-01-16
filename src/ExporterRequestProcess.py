@@ -35,14 +35,8 @@ def get_weekly_data(group, query_type, week):
             raise HTTPError
         return(request.text)
 
-    except ConnectionError:
-        logger.error(err_msgs.ConnectionErrorMessage)
-    except HTTPError:
-        logger.error(err_msgs.HTTPErrorMessage)
-    except TimeoutError:
-        logger.error(err_msgs.TimeoutErrorMessage)
-    except RequestException:
-        logger.error(err_msgs.RequestExceptionMessage)
+    except RequestException as e:
+        logger.error(e)
 
 
 def sanitize_weekly_data(raw_data, month) -> list:
