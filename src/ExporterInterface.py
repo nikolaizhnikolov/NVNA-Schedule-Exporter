@@ -21,12 +21,11 @@ import ExporterUtil as util
 import ExporterHashChecker as hash_checker
 from ExporterUtil import EXPORT_TYPES, INTERFACE_MONTHS, INTERFACE_QUERY_TYPES
 
-logger.info("Exporter Interface initializing...")
-if hash_checker.is_tampered():
-    logger.error("Exporter shutting down!")
-    sys.exit()
-# TODO add hash check on init
-# TODO make hash check against GITHUB instead of locally for it to
+# TODO: clean this up or remove it
+# logger.info("Exporter Interface initializing...")
+# if hash_checker.is_tampered():
+#     logger.error("Exporter shutting down!")
+#     sys.exit()
 
 root_frame = Tk()
 group = IntVar(value=config.group)
@@ -38,8 +37,6 @@ export_file_type = StringVar(value=config.export_file_type)
 
 # Save loaded data into config file and attempt export
 # If succesfull show dialog message and log
-
-
 def export():
     config.update_config(group.get(),
                          query_type.get(),
