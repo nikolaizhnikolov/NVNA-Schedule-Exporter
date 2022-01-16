@@ -1,11 +1,12 @@
 import hashlib
 import os
 import datetime
- 
+
 # Get cwd and all script file names, plus the expected .exe in the build folder
-# If a file is missing or the structure does not match, this script will throw an error
+# If a file is missing or the structure does not match, this script will
+# throw an error
 CWD = os.path.dirname(__file__)
-PARENT_CWD = os.path.dirname(CWD) 
+PARENT_CWD = os.path.dirname(CWD)
 
 files = [PARENT_CWD + r'\build\dist\NvnaScheduleExporter.exe']
 
@@ -28,6 +29,6 @@ for file in files:
         bytes = f.read()
         readable_hash = hashlib.sha256(bytes).hexdigest()
         filename = file.split('\\').pop()
-        checksum_file.write(filename + ": " + readable_hash+'\n')
+        checksum_file.write(filename + ": " + readable_hash + '\n')
         f.close()
 checksum_file.close()

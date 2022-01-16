@@ -8,10 +8,11 @@ workbook = Workbook()
 sheet = workbook.active
 
 # TODO: add query_type as a parameter somewhere here
-# TODO: refactor this whole file 
-# have a single export into excel for monthly reports 
-# then a different function for each simple export, 
+# TODO: refactor this whole file
+# have a single export into excel for monthly reports
+# then a different function for each simple export,
 #   which will format the data inside the function body depending on query_type
+
 
 def export_file(data, folder, file_name, file_type):
     file_type = str(file_type)
@@ -25,6 +26,7 @@ def export_file(data, folder, file_name, file_type):
         logger.info('File type not supported!\nRaising exception')
         raise ValueError('File type not supported!')
 
+
 def export_data_into_excel(data, folder, file_name):
     file_name = file_name + ExportTypes.EXCEL
     file_path = folder + '\\' + file_name
@@ -32,26 +34,26 @@ def export_data_into_excel(data, folder, file_name):
 
     for day in data:
         sheet.append(day)
-        
+
     workbook.save(file_path)
     return True
 
-    
+
 def export_data_into_word(data, folder, file_name):
     file_name = file_name + ExportTypes.WORD
     file_path = folder + '\\' + file_name
     logger.info("Creating Word Document: " + file_name + " in: " + folder)
 
     file = Document()
-    file.add_heading('Програма за месец '+'Х')
+    file.add_heading('Програма за месец ' + 'Х')
 
     for day in data:
         file.add_paragraph(day)
-        
+
     file.save(file_path)
     return True
-    
-    
+
+
 def export_data_into_text(data, folder, file_name):
     file_name = file_name + ExportTypes.PLAINTEXT
     file_path = folder + '\\' + file_name
