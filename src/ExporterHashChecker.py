@@ -22,7 +22,7 @@ for file in os.listdir(CWD):
 def hash():
     # Overwrite file each time
     checksum_file = open(os.path.join(CWD, 'checksums.txt'), 'w')
-    checksum_file.write("Last update at: " + str(datetime.datetime.now()) + "\n\n")
+    # checksum_file.write("Last update at: " + str(datetime.datetime.now()) + "\n\n")
 
     # For each file
     for file in files:
