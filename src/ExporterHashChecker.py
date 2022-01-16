@@ -47,6 +47,7 @@ def is_tampered():
     
     hash()
     with open(os.path.join(CWD, 'checksums.txt'), 'r') as local_checksums_file:
+        local_checksums_file.seek(0)
         if remote_checksums_file.text is not local_checksums_file.read():
             return True
     return False
