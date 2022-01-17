@@ -1,5 +1,7 @@
 from datetime import date, datetime
+from distutils.command.config import config
 from genericpath import exists
+from multipledispatch import dispatch
 import os
 import ExporterLogger as logger
 import ExporterUtil as util
@@ -17,8 +19,7 @@ config_parser = configparser.RawConfigParser()
 
 
 def create_config():
-    file_exists = exists(CONFIG_PATH)
-    if not file_exists:
+    if not exists(CONFIG_PATH):
         file = open(CONFIG_PATH, 'w')
         file.close()
     config_parser.read(CWD + '\\exporter_config.cfg', encoding='UTF-8')
@@ -26,6 +27,18 @@ def create_config():
         config_parser.add_section('request_parameters')
 
 
+def get(name, fallback):
+    value = config_parser.get('request_parameters', name, fallback=fallback)
+    logger.info("Getting " + name + " with value: " + str(value))
+    return value
+
+
+def set(name, value):
+    logger.info("Setting " + name + " with new value: " + str(value))
+    config_parser.set('request_parameters', name, value)
+
+
+@dispatch(int, str, str, str, str, str)
 def update_config(
         group,
         query_type,
@@ -35,22 +48,43 @@ def update_config(
         export_file_type):
     # Check file and section exist
     create_config()
+
+    logger.info("Updating configuration...")
     # Set parameters
-    config_parser.set('request_parameters', 'group', group)
-    config_parser.set('request_parameters', 'query_type', query_type)
-    config_parser.set('request_parameters', 'month', month)
-    config_parser.set(
-        'request_parameters',
-        'export_directory',
-        export_directory)
-    config_parser.set(
-        'request_parameters',
-        'export_file_name',
-        export_file_name)
-    config_parser.set(
-        'request_parameters',
-        'export_file_type',
-        export_file_type)
+    set('group', group)
+    set('query_type', query_type)
+    set('month', month)
+    set('export_directory', export_directory)
+    set('export_file_name', export_file_name)
+    set('export_file_type', export_file_type)
+
+    # Re/write into config file
+    with open(CWD + '\\exporter_config.cfg', 'w', encoding='UTF-8') as config_file:
+        config_parser.write(config_file)
+    logger.info("Finished updating...")
+
+
+@dispatch(int, str, int, int, str, str, str)
+def update_config(
+        group,
+        query_type,
+        first_week,
+        last_week,
+        export_directory,
+        export_file_name,
+        export_file_type):
+    # Check file and section exist
+    create_config()
+
+    # Set parameters
+    set('group', group)
+    set('query_type', query_type)
+    set('first_week', first_week)
+    set('last_week', last_week)
+    set('export_directory', export_directory)
+    set('export_file_name', export_file_name)
+    set('export_file_type', export_file_type)
+
     # Re/write into config file
     with open(CWD + '\\exporter_config.cfg', 'w', encoding='UTF-8') as config_file:
         config_parser.write(config_file)
@@ -59,29 +93,12 @@ def update_config(
 # Initial file check
 create_config()
 
-group = config_parser.get('request_parameters', 'group', fallback='0')
-query_type = config_parser.get(
-    'request_parameters',
-    'query_type',
-    fallback=util.get_default_interface_query_type())
-month = config_parser.get(
-    'request_parameters',
-    'month',
-    fallback=util.get_interface_month(
-        date.today().strftime('%B')))
-export_directory = config_parser.get(
-    'request_parameters',
-    'export_directory',
-    fallback=CWD)
-export_file_name = config_parser.get(
-    'request_parameters',
-    'export_file_name',
-    fallback="Export")
-export_file_type = config_parser.get(
-    'request_parameters',
-    'export_file_type',
-    fallback=util.get_default_export_type())
-year = config_parser.get(
-    'request_parameters',
-    'year',
-    fallback=datetime.today().year)
+group =             get('group', '0')
+query_type =        get('query_type', util.get_default_interface_query_type())
+month =             get('month', util.get_interface_month(date.today().strftime('%B')))
+export_directory =  get('export_directory', CWD)
+export_file_name =  get('export_file_name', "Export")
+export_file_type =  get('export_file_type', util.get_default_export_type())
+year =              get('year', datetime.today().year)
+first_week =        get('first_week', 1)
+last_week =         get('last_week', 2)
