@@ -1,14 +1,14 @@
-from datetime import date, datetime
-from requests import RequestException
-from requests.models import HTTPError
-import calendar
-import requests
-import FileExporter
 import re
 import unicodedata
+from datetime import datetime
+
+import requests
+from requests import RequestException
+from requests.models import HTTPError
+
 import ExporterLogger as logger
 import ExporterUtil as util
-import ExporterRequestErrorMessages as err_msgs
+import FileExporter
 
 URL = 'https://nvna.eu/wp/'
 
@@ -82,10 +82,13 @@ def sanitize_weekly_data(raw_data, month) -> list:
     return weekly_data
 
 
-def extract_weekly_data(group, query_type, week, month):
+def extract_weekly_data(group, query_type, week):
+    raw_data = get_weekly_data(group, query_type, week)
+    return sanitize_weekly_data(raw_data, None)
+
+def extract_monthly_data(group, query_type, week, month):
     raw_data = get_weekly_data(group, query_type, week)
     return sanitize_weekly_data(raw_data, month)
-
 
 def export_monthly_data(
         group,
@@ -103,17 +106,45 @@ def export_monthly_data(
     for week_index in weekly_indices:
         logger.info('Getting schedule for Week: ' + str(week_index))
         # Add weekly data to monthly
-        weekly_data = extract_weekly_data(
+        weekly_data = extract_monthly_data(
             group, query_type, week_index, month_index)
         for day_data in weekly_data:
             monthly_data_list.append(day_data)
             logger.info(day_data)
 
     # Export data
-    # TODO: send query_type as an extra parameter so
-    # the exporter can choose how to format it
     return FileExporter.export_file(
         monthly_data_list,
+        output_folder,
+        file_name,
+        file_type)
+
+def simple_export(
+        group,
+        query_type,
+        first_week,
+        last_week,
+        output_folder,
+        file_name,
+        file_type):
+    
+    weekly_indices = range(first_week, last_week + 1)
+
+    # Create empty list to store daily results
+    logger.info('Getting schedule for Week range: ' + str(first_week) + ' to ' + str(last_week))
+    data = []
+    for week_index in weekly_indices:
+        logger.info('Getting schedule for Week: ' + str(week_index))
+        # Add weekly data to monthly
+        weekly_data = extract_weekly_data(
+            group, query_type, week_index)
+        for day_data in weekly_data:
+            data.append(day_data)
+            logger.info(day_data)
+
+    # Export data
+    return FileExporter.export_file(
+        data,
         output_folder,
         file_name,
         file_type)

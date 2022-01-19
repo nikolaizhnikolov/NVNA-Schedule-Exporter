@@ -65,6 +65,33 @@ def export_monthly():
         logger.info("Excel export finished successfuly")
 
 
+# Simple data export to format of choice
+def export_simple():
+    config.update_config(group.get(),
+                         query_type.get(),
+                         first_week.get(),
+                         last_week.get(),
+                         export_directory.get(),
+                         export_file_name.get(),
+                         export_file_type.get())
+
+    logger.info("Attempting to create simple export...")
+    export_result = ExporterRequestProcess.export_monthly_data(
+        group.get(),
+        util.get_query_type(query_type.get()),
+        util.get_month(month.get()),
+        export_directory.get(),
+        export_file_name.get(),
+        export_file_type.get())
+
+    if export_result:
+        messagebox.showinfo(
+            title="Success",
+            message=export_file_name.get() +
+            " created succesfully in: \n" +
+            export_directory.get())
+        logger.info("Excel export finished successfuly")
+
 # Create root frame, title, logo and weight for resizing
 root_frame.title('Nvna Schedule Exporter')
 root_frame.geometry("650x350")
