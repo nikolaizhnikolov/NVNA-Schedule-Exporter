@@ -14,7 +14,7 @@ sheet = workbook.active
 #   which will format the data inside the function body depending on query_type
 
 
-def export_file(data, folder, file_name, file_type):
+def export_simple_report(data, folder, file_name, file_type):
     file_type = str(file_type)
     if(file_type.__eq__(ExportTypes.EXCEL)):
         return export_data_into_excel(data, folder, file_name)
@@ -25,6 +25,18 @@ def export_file(data, folder, file_name, file_type):
     else:
         logger.info('File type not supported!\nRaising exception')
         raise ValueError('File type not supported!')
+    
+    
+def export_monthly_report():
+    file_name = file_name + ExportTypes.EXCEL
+    file_path = folder + '\\' + file_name
+    logger.info("Creating Excel Document: " + file_name + " in: " + folder)
+
+    for day in data:
+        sheet.append(day)
+
+    workbook.save(file_path)
+    return True    
 
 
 def export_data_into_excel(data, folder, file_name):

@@ -44,8 +44,7 @@ def update_config(
         query_type,
         month,
         export_directory,
-        export_file_name,
-        export_file_type):
+        export_file_name):
     # Check file and section exist
     create_config()
 
@@ -56,7 +55,6 @@ def update_config(
     set('month', month)
     set('export_directory', export_directory)
     set('export_file_name', export_file_name)
-    set('export_file_type', export_file_type)
 
     # Re/write into config file
     with open(CWD + '\\exporter_config.cfg', 'w', encoding='UTF-8') as config_file:

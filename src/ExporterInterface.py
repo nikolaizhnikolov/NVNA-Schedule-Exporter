@@ -34,8 +34,8 @@ month = StringVar(value=config.month)
 export_directory = StringVar(value=config.export_directory)
 export_file_name = StringVar(value=config.export_file_name)
 export_file_type = StringVar(value=config.export_file_type)
-first_week = StringVar(value=config.first_week)
-last_week = StringVar(value=config.last_week)
+first_week = IntVar(value=config.first_week)
+last_week = IntVar(value=config.last_week)
 
 # Save loaded data into config file and attempt export
 # If succesfull show dialog message and log
@@ -44,8 +44,7 @@ def export_monthly():
                          query_type.get(),
                          month.get(),
                          export_directory.get(),
-                         export_file_name.get(),
-                         export_file_type.get())
+                         export_file_name.get())
 
     logger.info("Attempting to export monthly EXCEL report...")
     export_result = ExporterRequestProcess.export_monthly_data(
@@ -53,8 +52,7 @@ def export_monthly():
         util.get_query_type(query_type.get()),
         util.get_month(month.get()),
         export_directory.get(),
-        export_file_name.get(),
-        export_file_type.get())
+        export_file_name.get())
 
     if export_result:
         messagebox.showinfo(
@@ -76,10 +74,11 @@ def export_simple():
                          export_file_type.get())
 
     logger.info("Attempting to create simple export...")
-    export_result = ExporterRequestProcess.export_monthly_data(
+    export_result = ExporterRequestProcess.export_weekly_data(
         group.get(),
         util.get_query_type(query_type.get()),
-        util.get_month(month.get()),
+        first_week.get(),
+        last_week.get(),
         export_directory.get(),
         export_file_name.get(),
         export_file_type.get())
@@ -184,12 +183,15 @@ ttk.Label(excel_frame, text='Файл:').grid(
 ttk.Entry(excel_frame, textvariable=export_file_name).grid(
     column=0, columnspan=3, row=10,
     sticky=NSEW, padx=padx, pady=padyb)
-export_file_type_widget = ttk.OptionMenu(
-    excel_frame, export_file_type, export_file_type.get(), *EXPORT_TYPES)
-export_file_type_widget.grid(
+ttk.Label(excel_frame, text=".xlsx").grid(
     column=3, row=10,
     sticky=NSEW, pady=padyb)
-export_file_type_widget.configure(width=5)
+# export_file_type_widget = ttk.OptionMenu(
+#     excel_frame, export_file_type, export_file_type.get(), *EXPORT_TYPES)
+# export_file_type_widget.grid(
+#     column=3, row=10,
+#     sticky=NSEW, pady=padyb)
+# export_file_type_widget.configure(width=5)
 browse_button_widget = ttk.Button(excel_frame, text='Export', command=export_monthly)
 browse_button_widget.grid(
     column=4, row=10,
@@ -268,7 +270,7 @@ export_file_type_widget.grid(
     column=3, row=10,
     sticky=NSEW, pady=padyb)
 export_file_type_widget.configure(width=5)
-browse_button_widget = ttk.Button(export_frame, text='Export', command=export_monthly)
+browse_button_widget = ttk.Button(export_frame, text='Export', command=export_simple)
 browse_button_widget.grid(
     column=4, row=10,
     sticky=NSEW, padx=padx_button, pady=padyb)

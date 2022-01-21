@@ -95,31 +95,29 @@ def export_monthly_data(
         query_type,
         month_name,
         output_folder,
-        file_name,
-        file_type):
+        file_name):
     month_index = datetime.strptime(month_name, '%B').month
     weekly_indices = util.get_weekly_indices_for_month(month_name)
 
     # Create empty list to store daily results
     logger.info('Getting schedule for Month: ' + str(month_name))
-    monthly_data_list = []
+    monthly_data = []
     for week_index in weekly_indices:
         logger.info('Getting schedule for Week: ' + str(week_index))
         # Add weekly data to monthly
         weekly_data = extract_monthly_data(
             group, query_type, week_index, month_index)
         for day_data in weekly_data:
-            monthly_data_list.append(day_data)
+            monthly_data.append(day_data)
             logger.info(day_data)
 
     # Export data
-    return FileExporter.export_file(
-        monthly_data_list,
+    return FileExporter.export_monthly_report(
+        monthly_data,
         output_folder,
-        file_name,
-        file_type)
+        file_name)
 
-def simple_export(
+def export_weekly_data(
         group,
         query_type,
         first_week,
@@ -143,7 +141,7 @@ def simple_export(
             logger.info(day_data)
 
     # Export data
-    return FileExporter.export_file(
+    return FileExporter.export_simple_report(
         data,
         output_folder,
         file_name,
