@@ -52,6 +52,7 @@ def sanitize_weekly_data(raw_data, month) -> list:
         if no_lecture is not None:
             daily_data = []
             daily_data.append(no_lecture.group(2))
+            daily_data.append(no_lecture.group(3))
             daily_data.append("Няма занятия")
             weekly_data.append(daily_data)
         # Else - get a regex for the whole day, then search it for any lecture
