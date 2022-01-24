@@ -68,6 +68,7 @@ def sanitize_weekly_data(raw_data, month) -> list:
                 if lectures.__len__ != 0:
                     daily_data = []
                     daily_data.append(lectures_schedule.group(2))
+                    daily_data.append(lectures_schedule.group(3))
                     for lecture in lectures:
                         daily_data.append(str.strip(lecture[0]))
                         daily_data.append(str.strip(lecture[1]))
@@ -145,4 +146,5 @@ def export_weekly_data(
         data,
         output_folder,
         file_name,
-        file_type)
+        file_type,
+        weekly_indices)

@@ -113,7 +113,7 @@ def daily_regex_template(day, month):
     if month is None:
         month='[0-9]{1,2}'
     return '(<tr><td[^>]+>(' + str(day) + \
-        ',\\s[0-9]{4}-[0]?' + str(month) + '-[0-9]{2})</td></tr>)'
+        '),\\s([0-9]{4}-[0]?' + str(month) + '-[0-9]{2})</td></tr>)'
 
 
 def daily_schedule_regex_template():
