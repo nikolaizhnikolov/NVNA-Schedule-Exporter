@@ -38,7 +38,7 @@ def set(name, value):
     config_parser.set('request_parameters', name, value)
 
 
-@dispatch(int, str, str, str, str, str)
+@dispatch(int, str, str, str, str)
 def update_config(
         group,
         query_type,
