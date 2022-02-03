@@ -9,6 +9,11 @@ QUERY_TYPES = ['Group',
                'Lecturer',
                'Room']
 
+class QueryTypes:
+    group = 'group'
+    lecturer = 'lecturer'
+    room = 'room'
+
 INTERFACE_QUERY_TYPES = ['Класно отделение',
                          'Преподавател',
                          'Зала']
@@ -48,6 +53,11 @@ class ExportTypes:
     EXCEL = '.xlsx'
     WORD = '.docx'
     PLAINTEXT = '.txt'
+
+    
+class TextColors:
+    BOLD = '\033[1m'
+    END = '\033[0m'
 
 
 def get_query_type(interface_type):

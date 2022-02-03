@@ -2,7 +2,7 @@ from openpyxl import Workbook
 from docx import Document
 
 import ExporterLogger as logger
-from ExporterUtil import ExportTypes
+from ExporterUtil import ExportTypes, TextColors
 
 workbook = Workbook()
 sheet = workbook.active
@@ -68,24 +68,30 @@ def export_data_into_word(data, folder, file_name, weekly_indices):
 def export_data_into_text(data, folder, file_name, weekly_indices):
     file_name = file_name + ExportTypes.PLAINTEXT
     file_path = folder + '\\' + file_name
+    
     logger.info("Creating Text File: " + file_name + " in: " + folder)
 
+    # Format data and write into a file
     file = open(file_path, 'w', encoding='UTF-8')
+    week_index_start = str(weekly_indices[0])
+    week_index_end = str(weekly_indices[weekly_indices.__len__()-1])
+    if week_index_start == week_index_end:
+        file.write("Програма за седмица: " + week_index_start + '\n')
+    else:
+        file.write("Програма за седмици: " + week_index_start + " - " + week_index_end + '\n')
     d_index = 0
+    # For each week
     for w_index in weekly_indices:
-        file.write('Седмица ' + str(w_index) + ':')
-        first_day=data[d_index]
-        last_day=data[d_index + 6]
-        file.write(first_day[1] + ' - ' + last_day[1] + '\n')
+        if week_index_start != week_index_end:
+            # Write the week index
+            file.write('Седмица: ' + str(w_index) + '\n')
 
+        # Get each day's info
         for i in range(7):
-            day = data[d_index]
-
-            file.write(str(day) + '\n')
-
+            day_info = data[d_index].info()
+            if day_info is not None:
+                file.write(day_info + '\n')
             d_index+=1
-    # for day in data:
-    #     file.write(str(day) + '\n')
 
     file.close()
 
