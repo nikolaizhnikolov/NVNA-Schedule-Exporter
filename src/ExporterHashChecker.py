@@ -37,6 +37,9 @@ def hash():
     checksum_file.close()
 
 
+# TODO: remove this once its properly tied to the URL
+hash()
+
 # Calculate new hashes, then compare against remote repository
 def is_tampered():
     try:
