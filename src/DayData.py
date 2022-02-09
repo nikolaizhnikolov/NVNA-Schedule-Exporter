@@ -46,6 +46,15 @@ class Lecture:
             data = data + self.room + ' '
         return data
 
+    
+    def get_optionals(self):
+        if(self.lecturer == ''):
+            return [self.group, self.room]
+        elif(self.group ==''):
+            return [self.lecturer, self.room]
+        else:
+            return [self.group, self.lecturer]
+
 
 class Day:
     weekday = str('')
