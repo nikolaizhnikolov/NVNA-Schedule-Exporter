@@ -19,16 +19,8 @@ import ExporterConfig as config
 import ExporterLogger as logger
 import ExporterRequestProcess
 import ExporterUtil as util
-# import ExporterHashChecker as hash_checker
 from ExporterUtil import EXPORT_TYPES, INTERFACE_MONTHS, INTERFACE_QUERY_TYPES
 
-CWD = os.path.dirname(__file__)
-
-# TODO: clean this up or remove it
-# logger.info("Exporter Interface initializing...")
-# if hash_checker.is_tampered():
-#     logger.error("Exporter shutting down!")
-#     sys.exit()
 
 root_frame = Tk()
 group = IntVar(value=config.group)
@@ -97,7 +89,7 @@ def export_simple():
 # Create root frame, title, logo and weight for resizing
 root_frame.title('Nvna Schedule Exporter')
 root_frame.geometry("650x350")
-icon = PhotoImage(file=CWD + r'\..\assets\logo.png')
+icon = PhotoImage(file=util.resource_path(r'logo.png'))# + r'\..\assets\logo.png')
 root_frame.iconphoto(True, icon)
 
 # Padding configuration
@@ -158,7 +150,7 @@ ttk.OptionMenu(excel_frame, month, month.get(), *INTERFACE_MONTHS).grid(
     column=0, columnspan=4, row=5,
     sticky=NSEW, padx=padx)
 # Image
-uni_logo = (Image.open(r'assets\logo.png'))
+uni_logo = (Image.open(util.resource_path('logo.png')))
 uni_logo = uni_logo.resize((128, 128), Image.ANTIALIAS)
 uni_logo = ImageTk.PhotoImage(uni_logo)
 ttk.Label(excel_frame, image=uni_logo).grid(

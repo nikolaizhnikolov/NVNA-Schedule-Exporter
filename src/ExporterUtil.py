@@ -1,6 +1,17 @@
 from datetime import date, datetime
 from multipledispatch import dispatch
 import calendar
+import os
+
+# Gets the path for a resource independent of environment
+def resource_path(relative):
+    return os.path.join(
+        os.environ.get(
+            "_MEIPASS2",
+            os.path.abspath(".")
+        ),
+        relative
+    )
 
 # =============================================================================
 # ============================= ENUMS =========================================

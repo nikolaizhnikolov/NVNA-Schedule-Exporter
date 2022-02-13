@@ -3,17 +3,21 @@ from distutils.command.config import config
 from genericpath import exists
 from multipledispatch import dispatch
 import os
+import sys
 import ExporterLogger as logger
 import ExporterUtil as util
 import configparser
 
-# CWD is relative to the source files
-CWD = os.path.dirname(os.path.realpath(__file__))  # os.getcwd()
-CWD = CWD.removesuffix(r'\src')
-print('CWD is: ' + CWD)
-CONFIG_PATH = CWD + '\\exporter_config.cfg'
+# Determine if application is run as a script or .exe
+if getattr(sys, 'frozen', False):
+    CWD = os.path.dirname(sys.executable)
+elif __file__:
+    CWD = os.path.dirname(__file__)
 
 logger.info("Current working directory set to:" + CWD)
+
+CONFIG_PATH = CWD + '\\exporter_config.cfg'
+
 
 config_parser = configparser.RawConfigParser()
 
