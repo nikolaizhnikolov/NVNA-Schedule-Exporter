@@ -14,12 +14,15 @@ from tkinter.constants import BOTH
 
 from PIL import Image, ImageTk
 
+import os
 import ExporterConfig as config
 import ExporterLogger as logger
 import ExporterRequestProcess
 import ExporterUtil as util
-import ExporterHashChecker as hash_checker
+# import ExporterHashChecker as hash_checker
 from ExporterUtil import EXPORT_TYPES, INTERFACE_MONTHS, INTERFACE_QUERY_TYPES
+
+CWD = os.path.dirname(__file__)
 
 # TODO: clean this up or remove it
 # logger.info("Exporter Interface initializing...")
@@ -94,7 +97,7 @@ def export_simple():
 # Create root frame, title, logo and weight for resizing
 root_frame.title('Nvna Schedule Exporter')
 root_frame.geometry("650x350")
-icon = PhotoImage(file=r'assets\logo.png')
+icon = PhotoImage(file=CWD + r'\..\assets\logo.png')
 root_frame.iconphoto(True, icon)
 
 # Padding configuration
@@ -264,8 +267,10 @@ ttk.Label(export_frame, text='Файл:').grid(
 ttk.Entry(export_frame, textvariable=export_file_name).grid(
     column=0, columnspan=3, row=10,
     sticky=NSEW, padx=padx, pady=padyb)
+FILTERED_EXPORT_TYPES = EXPORT_TYPES
+FILTERED_EXPORT_TYPES.remove('.xlsx')
 export_file_type_widget = ttk.OptionMenu(
-    export_frame, export_file_type, export_file_type.get(), *EXPORT_TYPES)
+    export_frame, export_file_type, export_file_type.get(), *FILTERED_EXPORT_TYPES)
 export_file_type_widget.grid(
     column=3, row=10,
     sticky=NSEW, pady=padyb)
