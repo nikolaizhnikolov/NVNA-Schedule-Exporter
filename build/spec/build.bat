@@ -1,9 +1,8 @@
-# Run from base folder
 pyinstaller src/ExporterInterface.py ^
 --distpath build/dist ^
 --workpath build/build ^
  --specpath build/spec ^
  --noconsole --onefile ^
- --add-data '../../assets/logo.png;../../assets/logo.ico' ^
- --icon 'assets/logo.png' ^
- --splash 'assets/logo.png'
+ --add-data "assets/logo.png;assets/logo.ico" 
+@REM  --splash "assets/logo.png" 
+@REM  --icon "assets/logo.ico" ^
