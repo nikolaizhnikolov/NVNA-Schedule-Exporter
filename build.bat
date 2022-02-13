@@ -2,7 +2,9 @@ pyinstaller src/ExporterInterface.py ^
 --distpath dist ^
 --workpath build ^
  --specpath spec ^
- --noconsole --onefile ^
- --add-data "../assets/logo_bg.png;../assets/logo.ico" ^
+ --onefile ^
+ --noconsole ^
+ --add-data "../assets;assets"^
  --splash "../assets/logo_bg.png" ^
- --icon "../assets/logo.ico" 
+ --icon "../assets/logo.ico" ^
+ --hidden-import=pyi_splash
