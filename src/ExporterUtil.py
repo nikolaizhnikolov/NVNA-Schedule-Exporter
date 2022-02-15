@@ -92,7 +92,7 @@ def get_interface_month(month):
 
 
 def get_default_export_type():
-    return ExportTypes.EXCEL
+    return ExportTypes.PLAINTEXT
 
 
 @dispatch(str)
