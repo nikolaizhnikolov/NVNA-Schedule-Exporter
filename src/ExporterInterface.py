@@ -14,20 +14,12 @@ from tkinter.constants import BOTH
 
 from PIL import Image, ImageTk
 
-import pyi_splash
-
 import os
 import ExporterConfig as config
 import ExporterLogger as logger
 import ExporterRequestProcess
 import ExporterUtil as util
 from ExporterUtil import EXPORT_TYPES, INTERFACE_MONTHS, INTERFACE_QUERY_TYPES
-
-
-try:
-    pyi_splash.close()
-except:
-    pass
 
 root_frame = Tk()
 group = IntVar(value=config.group)
@@ -266,8 +258,7 @@ ttk.Label(export_frame, text='Файл:').grid(
 ttk.Entry(export_frame, textvariable=export_file_name).grid(
     column=0, columnspan=3, row=10,
     sticky=NSEW, padx=padx, pady=padyb)
-FILTERED_EXPORT_TYPES = EXPORT_TYPES
-FILTERED_EXPORT_TYPES.remove('.xlsx')
+FILTERED_EXPORT_TYPES = EXPORT_TYPES[1:2]
 export_file_type_widget = ttk.OptionMenu(
     export_frame, export_file_type, export_file_type.get(), *FILTERED_EXPORT_TYPES)
 export_file_type_widget.grid(
