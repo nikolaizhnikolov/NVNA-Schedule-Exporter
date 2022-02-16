@@ -101,7 +101,7 @@ def export_data_into_word(data, folder, file_name, weekly_indices):
                 day_row[2].text = day_data.lectures[0].lecture_name
                 day_row[3].text = day_data.lectures[0].get_optionals()[0]
                 day_row[4].text = day_data.lectures[0].get_optionals()[1]
-                day_data.lectures.pop()
+                del(day_data.lectures[0])
                 for lecture in day_data.lectures:
                     # Add new row for each other lecture
                     day_row = table.add_row().cells
