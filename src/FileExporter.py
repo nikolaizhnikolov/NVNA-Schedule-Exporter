@@ -1,15 +1,17 @@
-from openpyxl import Workbook
+from itertools import count
 from docx import Document
-from docx.shared import Pt, Cm
 from docx.enum.style import WD_STYLE_TYPE
-from docx.oxml.ns import nsdecls
 from docx.oxml import parse_xml
+from docx.oxml.ns import nsdecls
+from docx.shared import Cm, Pt
+from openpyxl import Workbook, load_workbook
 
 import ExporterLogger as logger
-from ExporterUtil import ExportTypes
+from DayData import Lecture
+from ExporterUtil import resource_path, ExportTypes
 
-workbook = Workbook()
-sheet = workbook.active
+template = load_workbook(filename=resource_path('assets/template.xlsx'), data_only=False)
+template_data = load_workbook(filename=resource_path('assets/data.xlsx'), data_only=True)
 
 file = Document()
 
@@ -38,15 +40,45 @@ def export_simple_report(data, folder, file_name, file_type, weekly_indices):
         raise ValueError('File type not supported!')
     
     
+def extract_lecture_data_for_report(data, data_list):
+    return [data.lecture_name, data.group]
+
+def format_lecture_data_for_monthly_report(data):
+    # Extract all lecture names and group numbers
+    for day in data:
+        for lecture in day.lectures:
+            lecture_data.append(extract_lecture_data_for_report(lecture))
+    for lecture in lecture_data:
+        lecture.append(lecture_data.count(lecture))
+    lecture_data = set(lecture_data)
+    
+    # Count occurences
+    
+    # Remove duplicates
+    
+    # Add indicator for lecture/practice/exam
+    
+    # Get discipline number from name
+    
+    # Get bachelors/masters
+    pass
+
+    
 def export_monthly_report(data, folder, file_name):
+    # Load resources
+    # Get all lecture data
+    lecture_data = format_lecture_data_for_monthly_report(data)
+    # Change lecture name to number
+    # filter identical lectures and count them
+    # extract group numbers and count students
+    # check if 'exam'
+    # elif 'practical'
+    # else set as theoretical
+    # get group bachelors or masters for row index and add
     file_name = file_name + ExportTypes.EXCEL
     file_path = folder + '\\' + file_name
     logger.info("Creating Excel Document: " + file_name + " in: " + folder)
 
-    for day in data:
-        sheet.append(day)
-
-    workbook.save(file_path)
     return True    
 
 
@@ -55,10 +87,6 @@ def export_data_into_excel(data, folder, file_name, weekly_indices):
     file_path = folder + '\\' + file_name
     logger.info("Creating Excel Document: " + file_name + " in: " + folder)
 
-    for day in data:
-        sheet.append(day)
-
-    workbook.save(file_path)
     return True
 
 
