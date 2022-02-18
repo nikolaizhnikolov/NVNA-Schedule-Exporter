@@ -26,7 +26,7 @@ def create_config():
     if not exists(CONFIG_PATH):
         file = open(CONFIG_PATH, 'w')
         file.close()
-    config_parser.read(CWD + 'exporter_config.cfg', encoding='UTF-8')
+    config_parser.read(CONFIG_PATH, encoding='UTF-8')
     if not config_parser.has_section('request_parameters'):
         config_parser.add_section('request_parameters')
 
