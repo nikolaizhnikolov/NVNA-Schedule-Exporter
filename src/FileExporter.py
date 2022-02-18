@@ -1,4 +1,5 @@
 from itertools import count
+from unicodedata import name
 from docx import Document
 from docx.enum.style import WD_STYLE_TYPE
 from docx.oxml import parse_xml
@@ -9,9 +10,7 @@ from openpyxl import Workbook, load_workbook
 import ExporterLogger as logger
 from DayData import Lecture
 from ExporterUtil import resource_path, ExportTypes
-
-template = load_workbook(filename=resource_path('assets/template.xlsx'), data_only=False)
-template_data = load_workbook(filename=resource_path('assets/data.xlsx'), data_only=True)
+from LectureDataForExport import LectureDataForExport, LectureTypes
 
 file = Document()
 
@@ -40,44 +39,62 @@ def export_simple_report(data, folder, file_name, file_type, weekly_indices):
         raise ValueError('File type not supported!')
     
     
-def extract_lecture_data_for_report(data, data_list):
-    return [data.lecture_name, data.group]
-
 def format_lecture_data_for_monthly_report(data):
+    lecture_list=[]
     # Extract all lecture names and group numbers
     for day in data:
         for lecture in day.lectures:
-            lecture_data.append(extract_lecture_data_for_report(lecture))
-    for lecture in lecture_data:
-        lecture.append(lecture_data.count(lecture))
-    lecture_data = set(lecture_data)
-    
+            lecture_list.append(LectureDataForExport(lecture))
     # Count occurences
-    
+    for lecture in lecture_list:
+        lecture.occurences = lecture_list.count(lecture)
     # Remove duplicates
-    
-    # Add indicator for lecture/practice/exam
-    
+    lecture_set = set(lecture_list) 
+    # Open data file
+    template_data = load_workbook(filename=resource_path('assets/data.xlsx'), data_only=True)
     # Get discipline number from name
-    
-    # Get bachelors/masters
-    pass
+    disciplines_sheet = template_data['disciplines']
+    students_sheet = template_data['students']
+    for lecture in lecture_list:
+        for i in range (1, disciplines_sheet.max_row):
+            cell_value = str(disciplines_sheet['B'+str(i)].value)
+            if lecture.name.find(cell_value) != -1:
+                lecture.name_number = disciplines_sheet['A'+str(i)].value
+                break
+        # for row in disciplines_sheet.iter_rows(max_col=1):
+        #     for cell in row:
+        #         if cell.value == lecture.name:
+        #             lecture.name_number = disciplines_sheet[cell.coordinate.replace('A', 'B')]
+        #             break
+        # for group in lecture.groups:
+        #     for row in students_sheet.iter_rows(max_col=1):
+        #         for cell in row:
+        #             if cell.value == lecture.name:
+        #                 lecture.student_count += students_sheet[cell.coordinate.replace('A', 'B')]
+        #                 lecture.group_type = students_sheet[cell.coordinate.replace('A', 'C')]
+        #                 break        
+
+    template_data.close()
+    return lecture_list
 
     
 def export_monthly_report(data, folder, file_name):
     # Load resources
     # Get all lecture data
     lecture_data = format_lecture_data_for_monthly_report(data)
-    # Change lecture name to number
-    # filter identical lectures and count them
-    # extract group numbers and count students
-    # check if 'exam'
-    # elif 'practical'
-    # else set as theoretical
-    # get group bachelors or masters for row index and add
+
     file_name = file_name + ExportTypes.EXCEL
     file_path = folder + '\\' + file_name
     logger.info("Creating Excel Document: " + file_name + " in: " + folder)
+
+    template = load_workbook(filename=resource_path('assets/template.xlsx'), data_only=False)
+    sheet = template.active
+
+    for lecture in lecture_data:
+        sheet.append(lecture.get_as_list())
+    
+    template.save(file_path)
+    template.close()
 
     return True    
 

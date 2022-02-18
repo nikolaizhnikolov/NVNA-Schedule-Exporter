@@ -14,7 +14,6 @@ from tkinter.constants import BOTH
 
 from PIL import Image, ImageTk
 
-import os
 import ExporterConfig as config
 import ExporterLogger as logger
 import ExporterRequestProcess
@@ -112,7 +111,7 @@ info_frame.rowconfigure(index='0 1 2 3 4 5', weight=1)
 notebook.add(excel_frame, text='Месечни доклади')
 notebook.add(export_frame, text='Седмична програма')
 notebook.add(info_frame, text='Седмици')
-notebook.select(1)
+notebook.select(0)
 notebook.pack(expand=1, fill='both')
 
 
