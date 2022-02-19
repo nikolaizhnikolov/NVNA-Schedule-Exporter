@@ -61,18 +61,14 @@ def format_lecture_data_for_monthly_report(data):
             if lecture.name.find(cell_value) != -1:
                 lecture.name_number = disciplines_sheet['A'+str(i)].value
                 break
-        # for row in disciplines_sheet.iter_rows(max_col=1):
-        #     for cell in row:
-        #         if cell.value == lecture.name:
-        #             lecture.name_number = disciplines_sheet[cell.coordinate.replace('A', 'B')]
-        #             break
-        # for group in lecture.groups:
-        #     for row in students_sheet.iter_rows(max_col=1):
-        #         for cell in row:
-        #             if cell.value == lecture.name:
-        #                 lecture.student_count += students_sheet[cell.coordinate.replace('A', 'B')]
-        #                 lecture.group_type = students_sheet[cell.coordinate.replace('A', 'C')]
-        #                 break        
+        # Get student count and type from group number
+        for group in lecture.groups:                
+            for i in range (1, students_sheet.max_row):
+                cell_value = str(students_sheet['A'+str(i)].value)
+                if group.find(cell_value) != -1:
+                    lecture.student_count += students_sheet['B'+str(i)].value
+                    lecture.group_type = students_sheet['C'+str(i)].value
+                    break    
 
     template_data.close()
     return lecture_list
@@ -91,6 +87,11 @@ def export_monthly_report(data, folder, file_name):
     sheet = template.active
 
     for lecture in lecture_data:
+        # Get lectures in reverse type order - Masters -> Bachelors -> Courses
+        # e.g. 3-2-1-0
+        # Get const index for each to know in which row to add
+        # Set group number
+        # Add data depending on lecture/practice/exam
         sheet.append(lecture.get_as_list())
     
     template.save(file_path)
