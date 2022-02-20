@@ -7,10 +7,11 @@ class LectureTypes:
     EXAM = 'e'
 
 
-# Курсанти - 0
-# Редовно Бакалавър - 1
-# Задочно Бакалавър - 2
-# Редовно Магистър - 3
+class GroupTypes:
+    CADET = 0
+    BACHELORS = 1
+    BACHELORS_REMOTE = 2
+    MASTERS = 3
 
 
 def find_group_type(lecture_name):
@@ -31,7 +32,7 @@ class LectureDataForExport:
     name_number = str('')
     groups = []
     type = LectureTypes.LECTURE
-    group_type = 0
+    group_type = GroupTypes.BACHELORS
     student_count = 0
     occurences = 0
 
@@ -51,7 +52,7 @@ class LectureDataForExport:
         self.name_number = str('')
         self.groups = re.findall(re.compile('\d+'), lecture.group)
         self.type = find_group_type(lecture.lecture_name)
-        self.group_type = 0
+        self.group_type = GroupTypes.BACHELORS
         self.occurences = 0
         self.student_count = 0
 
@@ -62,23 +63,33 @@ class LectureDataForExport:
                 'Groups: ' + str(self.groups) + '\n' + \
                 'Type: '   + self.type + '\n' + \
                 'Occurences: ' + str(self.occurences) + '\n'
-        
 
-    def __eq__(self, __o: object) -> bool:
-        if  (self.name == __o.name) & \
-            (self.name_number == __o.name_number) & \
-            (self.groups == __o.groups) & \
-            (self.type == __o.group_type):
-            return True
-        else:
-            return False
+    def __key(self):
+        return (self.name, self.name_number, tuple(self.groups), self.type)
+
+    def __hash__(self):
+        return hash(self.__key())
+
+    def __eq__(self, other):
+        if isinstance(other, LectureDataForExport):
+            return self.__key() == other.__key()
+        return NotImplemented        
+
+    # def __eq__(self, __o: object) -> bool:
+    #     if  (self.name == __o.name) & \
+    #         (self.name_number == __o.name_number) & \
+    #         (self.groups == __o.groups) & \
+    #         (self.type == __o.group_type):
+    #         return True
+    #     else:
+    #         return False
 
 
-    def __hash__(self) -> int:
-        hash =  1
-        hash *= (1 + self.name.__hash__()) * \
-                (1 + self.name_number.__hash__()) * \
-                (1 + self.type.__hash__())
-        for group in self.groups:
-            hash *= (1 + group.__hash__())
-        return hash
+    # def __hash__(self) -> int:
+    #     hash =  1
+    #     hash *= (1 + self.name.__hash__()) * \
+    #             (1 + self.name_number.__hash__()) * \
+    #             (1 + self.type.__hash__())
+    #     for group in self.groups:
+    #         hash *= (1 + group.__hash__())
+    #     return hash

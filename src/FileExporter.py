@@ -1,4 +1,6 @@
+from dataclasses import asdict
 from itertools import count
+from re import M
 from unicodedata import name
 from docx import Document
 from docx.enum.style import WD_STYLE_TYPE
@@ -6,11 +8,15 @@ from docx.oxml import parse_xml
 from docx.oxml.ns import nsdecls
 from docx.shared import Cm, Pt
 from openpyxl import Workbook, load_workbook
+from openpyxl.worksheet.worksheet import Worksheet
+from math import ceil
+from collections import Counter
 
 import ExporterLogger as logger
 from DayData import Lecture
 from ExporterUtil import resource_path, ExportTypes
-from LectureDataForExport import LectureDataForExport, LectureTypes
+from LectureDataForExport import GroupTypes, LectureDataForExport, LectureTypes
+from OpenPyxlRowInsertOverride import insert_rows
 
 file = Document()
 
@@ -45,11 +51,12 @@ def format_lecture_data_for_monthly_report(data):
     for day in data:
         for lecture in day.lectures:
             lecture_list.append(LectureDataForExport(lecture))
-    # Count occurences
-    for lecture in lecture_list:
-        lecture.occurences = lecture_list.count(lecture)
-    # Remove duplicates
-    lecture_set = set(lecture_list) 
+    # Get unique values
+    lecture_counter = Counter(lecture_list)
+    for lecture in lecture_counter:
+        lecture.occurences = lecture_counter[lecture]
+    lecture_list = list(lecture_counter)
+    lecture_list.sort(key=lambda l: (l.name_number, l.groups))
     # Open data file
     template_data = load_workbook(filename=resource_path('assets/data.xlsx'), data_only=True)
     # Get discipline number from name
@@ -73,11 +80,38 @@ def format_lecture_data_for_monthly_report(data):
     template_data.close()
     return lecture_list
 
+def write_lecture_data_to_sheet(m_lectures, sheet, row_index):
+    sheet.insert_rows = insert_rows
+    for lecture in m_lectures:
+        sheet.insert_rows(sheet, row_index, 1, above=False)
+        # Get const index for each to know in which row to add
+        sheet['A'+str(row_index)].value = lecture.name_number
+        groups = ''
+        # Set group number
+        for group in lecture.groups:
+            groups += group + ', '
+        groups = groups[0:groups.__len__()-2]
+        sheet['B'+str(row_index)].value = groups
+        # Add student and lecture count
+        if lecture.type == LectureTypes.LECTURE:
+            sheet['C'+str(row_index)].value = lecture.student_count
+            sheet['D'+str(row_index)].value = lecture.occurences
+        # Add student count and practice count
+        elif lecture.type == LectureTypes.PRACTICE:
+            sheet['E'+str(row_index)].value = 1
+            sheet['F'+str(row_index)].value = ceil(lecture.student_count / 2)
+            sheet['G'+str(row_index)].value = lecture.occurences
+
+        row_index+=1
+        sheet.append(lecture.get_as_list())
+
     
 def export_monthly_report(data, folder, file_name):
     # Load resources
     # Get all lecture data
     lecture_data = format_lecture_data_for_monthly_report(data)
+    for lecture in lecture_data:
+        logger.info(lecture.__hash__())
 
     file_name = file_name + ExportTypes.EXCEL
     file_path = folder + '\\' + file_name
@@ -85,14 +119,19 @@ def export_monthly_report(data, folder, file_name):
 
     template = load_workbook(filename=resource_path('assets/template.xlsx'), data_only=False)
     sheet = template.active
+    sheet.insert_rows = insert_rows
 
-    for lecture in lecture_data:
-        # Get lectures in reverse type order - Masters -> Bachelors -> Courses
-        # e.g. 3-2-1-0
-        # Get const index for each to know in which row to add
-        # Set group number
-        # Add data depending on lecture/practice/exam
-        sheet.append(lecture.get_as_list())
+    M_ROW_INDEX = 42
+    K_ROW_INDEX = 29
+    B_ROW_INDEX = 14
+
+    m_lectures = filter(lambda l: l.group_type == GroupTypes.MASTERS, lecture_data)
+    write_lecture_data_to_sheet(m_lectures, sheet, 41)
+    c_lectures = filter(lambda l: l.group_type == GroupTypes.CADET, lecture_data)
+    write_lecture_data_to_sheet(c_lectures, sheet, 28)
+    b_lectures = filter(lambda l: l.group_type == GroupTypes.BACHELORS, lecture_data)
+    write_lecture_data_to_sheet(b_lectures, sheet, 13)
+
     
     template.save(file_path)
     template.close()
