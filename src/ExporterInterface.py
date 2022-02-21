@@ -129,12 +129,12 @@ ttk.Entry(excel_frame, textvariable=group).grid(
 ttk.Label(excel_frame, text='Вид заявка:').grid(
     column=0, row=2,
     sticky=NSEW, padx=padx, pady=padyt)
+FILTERED_INTERFACE_QUERY_TYPES = INTERFACE_QUERY_TYPES[1]
 ttk.OptionMenu(
     excel_frame,
     query_type,
     query_type.get(),
-    *
-    INTERFACE_QUERY_TYPES).grid(
+    FILTERED_INTERFACE_QUERY_TYPES).grid(
         column=0,
         columnspan=4,
         row=3,
