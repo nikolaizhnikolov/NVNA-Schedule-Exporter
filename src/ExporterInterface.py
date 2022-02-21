@@ -54,6 +54,10 @@ def export_monthly():
             " created succesfully in: \n" +
             export_directory.get())
         logger.info("Excel export finished successfuly")
+    else:
+        messagebox.showerror(
+            title="Error",
+            message="Something went wrong!")
 
 
 # Simple data export to format of choice
