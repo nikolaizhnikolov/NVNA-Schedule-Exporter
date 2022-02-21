@@ -110,8 +110,6 @@ def export_monthly_report(data, folder, file_name):
     # Load resources
     # Get all lecture data
     lecture_data = format_lecture_data_for_monthly_report(data)
-    for lecture in lecture_data:
-        logger.info(lecture.__hash__())
 
     file_name = file_name + ExportTypes.EXCEL
     file_path = folder + '\\' + file_name

@@ -98,7 +98,7 @@ def sanitize_weekly_data(raw_data, month, query_type) -> list:
                         lecture_data = sanitize_lecture_data(lecture, query_type)
                         daily_data.lectures.append(lecture_data)
                     weekly_data.append(daily_data)
-                    print(str(daily_data))
+                    logger.info(str(daily_data))
     return weekly_data
 
 
@@ -138,6 +138,7 @@ def export_monthly_data(
         monthly_data,
         output_folder,
         file_name)
+
 
 def export_weekly_data(
         group,
