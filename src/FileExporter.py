@@ -58,7 +58,11 @@ def format_lecture_data_for_monthly_report(data):
     lecture_list = list(lecture_counter)
     lecture_list.sort(key=lambda l: (l.name_number, l.groups))
     # Open data file
-    template_data = load_workbook(filename=resource_path('assets/data.xlsx'), data_only=True)
+    try:
+        template_data = load_workbook(filename=resource_path('assets/data.xlsx'), data_only=True)
+    except FileNotFoundError:
+        logger.error('A critical error occured, stopping export!')
+        logger.error('Data.xlsx file not found, please check assets!')
     # Get discipline number from name
     disciplines_sheet = template_data['disciplines']
     students_sheet = template_data['students']
@@ -115,7 +119,12 @@ def export_monthly_report(data, folder, file_name):
     file_path = folder + '\\' + file_name
     logger.info("Creating Excel Document: " + file_name + " in: " + folder)
 
-    template = load_workbook(filename=resource_path('assets/template.xlsx'), data_only=False)
+    try:
+        template = load_workbook(filename=resource_path('assets/template.xlsx'), data_only=False)
+    except FileNotFoundError:
+        logger.error('A critical error occured, stopping export!')
+        logger.error('Monthly exports Template.xlsx not found, please check assets!')
+        
     sheet = template.active
     sheet.insert_rows = insert_rows
 
