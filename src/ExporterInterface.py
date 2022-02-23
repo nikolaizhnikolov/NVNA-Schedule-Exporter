@@ -1,4 +1,3 @@
-import sys
 from tkinter import (
     NSEW,
     NS,
@@ -10,7 +9,6 @@ from tkinter import (
     PhotoImage,
     filedialog,
     messagebox)
-from tkinter.constants import BOTH
 
 from PIL import Image, ImageTk
 
@@ -18,6 +16,7 @@ import ExporterConfig as config
 import ExporterLogger as logger
 import ExporterRequestProcess
 import ExporterUtil as util
+import time
 from ExporterUtil import EXPORT_TYPES, INTERFACE_MONTHS, INTERFACE_QUERY_TYPES
 
 root_frame = Tk()
@@ -39,6 +38,7 @@ def export_monthly():
                          export_directory.get(),
                          export_file_name.get())
 
+    start_time = time.perf_counter()
     logger.info("Attempting to export monthly EXCEL report...")
     export_result = ExporterRequestProcess.export_monthly_data(
         group.get(),
@@ -46,6 +46,12 @@ def export_monthly():
         util.get_month(month.get()),
         export_directory.get(),
         export_file_name.get())
+    elapsed_time = time.perf_counter() - start_time
+    logger.info("Total time taken for export of " + \
+                query_type.get() + ":" + str(group.get()) + \
+                " data: " + \
+                str(elapsed_time) + \
+                " seconds")
 
     if export_result:
         messagebox.showinfo(
@@ -70,6 +76,7 @@ def export_simple():
                          export_file_name.get(),
                          export_file_type.get())
 
+    start_time = time.perf_counter()
     logger.info("Attempting to create simple export...")
     export_result = ExporterRequestProcess.export_weekly_data(
         group.get(),
@@ -79,6 +86,12 @@ def export_simple():
         export_directory.get(),
         export_file_name.get(),
         export_file_type.get())
+    elapsed_time = time.perf_counter() - start_time
+    logger.info("Total time taken for export of " + \
+                str(last_week.get() - first_week.get() + 1) + \
+                " weeks: " + \
+                str(elapsed_time) + \
+                " seconds")
 
     if export_result:
         messagebox.showinfo(
