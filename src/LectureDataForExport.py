@@ -74,22 +74,3 @@ class LectureDataForExport:
         if isinstance(other, LectureDataForExport):
             return self.__key() == other.__key()
         return NotImplemented        
-
-    # def __eq__(self, __o: object) -> bool:
-    #     if  (self.name == __o.name) & \
-    #         (self.name_number == __o.name_number) & \
-    #         (self.groups == __o.groups) & \
-    #         (self.type == __o.group_type):
-    #         return True
-    #     else:
-    #         return False
-
-
-    # def __hash__(self) -> int:
-    #     hash =  1
-    #     hash *= (1 + self.name.__hash__()) * \
-    #             (1 + self.name_number.__hash__()) * \
-    #             (1 + self.type.__hash__())
-    #     for group in self.groups:
-    #         hash *= (1 + group.__hash__())
-    #     return hash
