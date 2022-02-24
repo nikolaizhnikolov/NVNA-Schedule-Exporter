@@ -32,35 +32,36 @@ last_week = IntVar(value=config.last_week)
 # Save loaded data into config file and attempt export
 # If succesfull show dialog message and log
 def export_monthly():
-    config.update_config(group.get(),
-                         query_type.get(),
-                         month.get(),
-                         export_directory.get(),
-                         export_file_name.get())
+    try:
+        config.update_config(group.get(),
+                            query_type.get(),
+                            month.get(),
+                            export_directory.get(),
+                            export_file_name.get())
 
-    start_time = time.perf_counter()
-    logger.info("Attempting to export monthly EXCEL report...")
-    export_result = ExporterRequestProcess.export_monthly_data(
-        group.get(),
-        util.get_query_type(query_type.get()),
-        util.get_month(month.get()),
-        export_directory.get(),
-        export_file_name.get())
-    elapsed_time = time.perf_counter() - start_time
-    logger.info("Total time taken for export of " + \
-                query_type.get() + ":" + str(group.get()) + \
-                " data: " + \
-                str(elapsed_time) + \
-                " seconds")
+        start_time = time.perf_counter()
+        logger.info("Attempting to export monthly EXCEL report...")
+        ExporterRequestProcess.export_monthly_data(
+            group.get(),
+            util.get_query_type(query_type.get()),
+            util.get_month(month.get()),
+            export_directory.get(),
+            export_file_name.get())
+        elapsed_time = time.perf_counter() - start_time
+        logger.info("Total time taken for export of " + \
+                    query_type.get() + ":" + str(group.get()) + \
+                    " data: " + \
+                    str(elapsed_time) + \
+                    " seconds")
 
-    if export_result:
         messagebox.showinfo(
             title="Success",
             message=export_file_name.get() +
             " created succesfully in: \n" +
             export_directory.get())
         logger.info("Excel export finished successfuly")
-    else:
+    except Exception as e:
+        logger.error(e)
         messagebox.showerror(
             title="Error",
             message="Something went wrong!")
@@ -68,38 +69,44 @@ def export_monthly():
 
 # Simple data export to format of choice
 def export_simple():
-    config.update_config(group.get(),
-                         query_type.get(),
-                         first_week.get(),
-                         last_week.get(),
-                         export_directory.get(),
-                         export_file_name.get(),
-                         export_file_type.get())
+    try:
+        config.update_config(group.get(),
+                            query_type.get(),
+                            first_week.get(),
+                            last_week.get(),
+                            export_directory.get(),
+                            export_file_name.get(),
+                            export_file_type.get())
 
-    start_time = time.perf_counter()
-    logger.info("Attempting to create simple export...")
-    export_result = ExporterRequestProcess.export_weekly_data(
-        group.get(),
-        util.get_query_type(query_type.get()),
-        first_week.get(),
-        last_week.get(),
-        export_directory.get(),
-        export_file_name.get(),
-        export_file_type.get())
-    elapsed_time = time.perf_counter() - start_time
-    logger.info("Total time taken for export of " + \
-                str(last_week.get() - first_week.get() + 1) + \
-                " weeks: " + \
-                str(elapsed_time) + \
-                " seconds")
+        logger.info("Attempting to create simple export...")
+        start_time = time.perf_counter()
+        ExporterRequestProcess.export_weekly_data(
+            group.get(),
+            util.get_query_type(query_type.get()),
+            first_week.get(),
+            last_week.get(),
+            export_directory.get(),
+            export_file_name.get(),
+            export_file_type.get())
+        elapsed_time = time.perf_counter() - start_time
 
-    if export_result:
+        logger.info("Total time taken for export of " + \
+            str(last_week.get() - first_week.get() + 1) + \
+            " weeks: " + \
+            str(elapsed_time) + \
+            " seconds")
+        logger.info("Excel export finished successfuly")
         messagebox.showinfo(
             title="Success",
             message=export_file_name.get() +
             " created succesfully in: \n" +
             export_directory.get())
-        logger.info("Excel export finished successfuly")
+    except Exception as e:
+        logger.error(e)
+        messagebox.showerror(
+            title="Error",
+            message="Something went wrong!")
+
 
 # Create root frame, title, logo and weight for resizing
 root_frame.title('Nvna Schedule Exporter')
