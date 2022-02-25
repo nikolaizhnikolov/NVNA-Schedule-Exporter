@@ -48,7 +48,7 @@ def export_monthly():
             export_directory.get(),
             export_file_name.get())
         elapsed_time = time.perf_counter() - start_time
-        logger.info("Total time taken for export of " + \
+        logger.perf("Total time taken for export of " + \
                     query_type.get() + ":" + str(group.get()) + \
                     " data: " + \
                     str(elapsed_time) + \
@@ -90,7 +90,7 @@ def export_simple():
             export_file_type.get())
         elapsed_time = time.perf_counter() - start_time
 
-        logger.info("Total time taken for export of " + \
+        logger.perf("Total time taken for export of " + \
             str(last_week.get() - first_week.get() + 1) + \
             " weeks: " + \
             str(elapsed_time) + \
@@ -111,7 +111,7 @@ def export_simple():
 # Create root frame, title, logo and weight for resizing
 root_frame.title('Nvna Schedule Exporter')
 root_frame.geometry("650x350")
-icon = PhotoImage(file=util.resource_path(r'assets/logo.png'))# + r'\..\assets\logo.png')
+icon = PhotoImage(file=util.resource_path(r'assets/logo.png'))
 root_frame.iconphoto(True, icon)
 
 # Padding configuration
