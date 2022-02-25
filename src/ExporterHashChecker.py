@@ -12,9 +12,16 @@ import ExporterLogger as logger
 # throw an error
 CWD = os.path.dirname(__file__)
 PARENT_CWD = os.path.dirname(CWD)
+ASSETS_CWD = PARENT_CWD + r'\dist\assets'
 
-files = [PARENT_CWD + r'\build\dist\NvnaScheduleExporter.exe']
+# Add executable
+files = [PARENT_CWD + r'\dist\NvnaScheduleExporter.exe']
 
+# Add assets
+for file in os.listdir(ASSETS_CWD):
+    files.append(os.path.join(ASSETS_CWD, file))
+
+# Add scripts
 for file in os.listdir(CWD):
     if file.endswith(".py"):
         files.append(os.path.join(CWD, file))
