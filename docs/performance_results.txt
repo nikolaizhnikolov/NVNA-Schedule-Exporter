@@ -63,19 +63,24 @@ March:
 5.940
 4.842
 4.949
-4.353
 4.373
+4.353
 4.780
 4.353
 4.706
 4.809
 
 Standart deviation (avg of Min and Max):
-January 	10% at 1.670s -> 0.167s
-February 	12% at 2.237s -> 0.268s
-March		7%  at 2.202s -> 0.154
-5 Weeks 	16% at 1.052s -> 0.157s
-10 Weeks	14% at 2.323s -> 0.325s
-20 Weeks	7%  at 4.759s -> 0.333s
+January 	10% at 1.670s -> 0.167s for 36
+February 	12% at 2.237s -> 0.268s for 61
+March		7%  at 2.202s -> 0.154  for 68
+			10% ат 2,060s
+5 Weeks 	16% at 1.052s -> 0.157s for 34
+10 Weeks	14% at 2.323s -> 0.325s for 99
+20 Weeks	7%  at 4.759s -> 0.333s for 228
 
 AVG: 		11%
+
+0,030
+0,023
+0,020
