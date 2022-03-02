@@ -17,7 +17,10 @@ import ExporterLogger as logger
 import ExporterRequestProcess
 import ExporterUtil as util
 import time
+import pyi_splash
 from ExporterUtil import EXPORT_TYPES, INTERFACE_MONTHS, INTERFACE_QUERY_TYPES
+
+pyi_splash.close()
 
 root_frame = Tk()
 group = IntVar(value=config.group)
@@ -28,6 +31,8 @@ export_file_name = StringVar(value=config.export_file_name)
 export_file_type = StringVar(value=config.export_file_type)
 first_week = IntVar(value=config.first_week)
 last_week = IntVar(value=config.last_week)
+
+
 
 # Save loaded data into config file and attempt export
 # If succesfull show dialog message and log
